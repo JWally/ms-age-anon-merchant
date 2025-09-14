@@ -277,3 +277,97 @@ function traverse(obj: unknown): unknown {
 }
 
 export const base64traverse = traverse;
+
+// get64.ts
+type PathSeg = string | number;
+
+/**
+ * Like lodash.get, but if a node is a base64-encoded JSON string,
+ * it will decode+parse it and keep traversing.
+ */
+export function get64<T = unknown>(
+  obj: unknown,
+  path: string | PathSeg[],
+  defaultValue?: T,
+): T | undefined {
+  const parts = Array.isArray(path) ? path.map(toSeg) : normalizePath(path);
+
+  let cur: unknown = obj;
+  for (let i = 0; i < parts.length; i++) {
+    if (cur == null) return defaultValue;
+
+    // If the current node is a base64 JSON string, unwrap it.
+    if (typeof cur === "string") {
+      const unwrapped = tryParseB64Json(cur);
+      if (unwrapped !== undefined && unwrapped !== null) {
+        cur = unwrapped;
+      } else {
+        // Can't go deeper through a plain string
+        return defaultValue;
+      }
+    }
+
+    const key = parts[i];
+
+    if (Array.isArray(cur) && typeof key === "number") {
+      cur = cur[key];
+    } else if (isObj(cur)) {
+      cur = (cur as Record<string, unknown>)[String(key)];
+    } else {
+      return defaultValue;
+    }
+  }
+
+  return (cur as T) ?? defaultValue;
+}
+
+// ----------------- helpers -----------------
+
+function isObj(v: unknown): v is Record<string, unknown> {
+  return v !== null && typeof v === "object";
+}
+
+function toSeg(s: PathSeg): PathSeg {
+  return typeof s === "string" && /^\d+$/.test(s) ? Number(s) : s;
+}
+
+function normalizePath(path: string): PathSeg[] {
+  // Support simple bracket notation: a.b[0].c  -> ["a","b",0,"c"]
+  return path
+    .replace(/\[(\d+)\]/g, ".$1")
+    .split(".")
+    .filter(Boolean)
+    .map(toSeg);
+}
+
+function tryParseB64Json(s: string): unknown | undefined {
+  const std = toStdB64(s);
+  // Node (Lambda) first
+  if (typeof Buffer !== "undefined") {
+    try {
+      const text = Buffer.from(std, "base64").toString("utf8");
+      return JSON.parse(text);
+    } catch {
+      /* ignore */
+    }
+  }
+  // Browser fallback
+  if (typeof atob === "function") {
+    try {
+      const raw = atob(std);
+      // Most JSON is ASCII; if you have UTF-8 payloads, wire a TextDecoder here.
+      return JSON.parse(raw);
+    } catch {
+      /* ignore */
+    }
+  }
+  return undefined;
+}
+
+function toStdB64(b64: string): string {
+  // Handle URL-safe base64 and missing padding
+  let s = b64.replace(/-/g, "+").replace(/_/g, "/");
+  const pad = s.length % 4;
+  if (pad) s += "=".repeat(4 - pad);
+  return s;
+}

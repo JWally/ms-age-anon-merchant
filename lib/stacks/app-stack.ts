@@ -11,6 +11,7 @@ import { DomainConstruct } from "../constructs/domain";
 import { WafConstruct } from "../constructs/waf";
 import { WARMUP_EVENT } from "../../src-lambda/helpers/constants";
 import { StaticSiteConstruct } from "../constructs/static-site";
+import { SecretConstruct } from "../constructs/secrets";
 
 interface AppStackProps extends cdk.StackProps {
   environment: string;
@@ -28,12 +29,21 @@ export class TheStack extends cdk.Stack {
     const { environment, stackName, rootDomain, stage, region, siteDomains } =
       props;
 
+    // Create | Update our Key Management System
+    const secretsManager = new SecretConstruct(this, "Secrets", {
+      environment,
+      stackName,
+      stage,
+      projectName: id,
+    });
+
     // Create End-Point Lambda functions
     const lambdaConstruct = new LambdaConstruct(this, "Lambda", {
       environment,
       stackName,
       stage,
       projectName: id,
+      secretConstruct: secretsManager,
     });
 
     // Create API Gateway

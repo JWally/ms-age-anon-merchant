@@ -1,10 +1,6 @@
-// src/components/AgeVerificationModal.tsx
-import React, { useState } from "react";
-import {
-  createMerchantToken,
-  completeKycVerification,
-  parseSignedKycToken,
-} from "../utils/webauthn";
+// components/AgeVerificationModal.tsx - Properly styled version
+import React from "react";
+import { useWebAuthn } from "../hooks/useWebAuthn";
 
 interface AgeVerificationModalProps {
   onVerify: (jwt: string) => void;
@@ -15,60 +11,26 @@ export default function AgeVerificationModal({
   onVerify,
   onCancel,
 }: AgeVerificationModalProps) {
-  const [merchantToken, setMerchantToken] = useState("");
-  const [signedKycToken, setSignedKycToken] = useState("");
-  const [isCreatingToken, setIsCreatingToken] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [error, setError] = useState("");
-  const [showMerchantToken, setShowMerchantToken] = useState(false);
-  const [tokenCopied, setTokenCopied] = useState(false);
+  const {
+    merchantToken,
+    signedKycToken,
+    isCreatingToken,
+    isVerifying,
+    error,
+    showMerchantToken,
+    tokenCopied,
+    createToken,
+    verifyToken,
+    setSignedKycToken,
+    copyToken,
+  } = useWebAuthn();
 
-  // Step 1: Create merchant token
-  const handleCreateMerchantToken = async () => {
-    setIsCreatingToken(true);
-    setError("");
+  const handleCreateMerchantToken = () => createToken();
 
-    console.log("GO NOW!");
-    try {
-      const token = await createMerchantToken();
-      setMerchantToken(token);
-      setShowMerchantToken(true);
-    } catch (err) {
-      setError(`Failed to create token: ${err.message}`);
-    } finally {
-      setIsCreatingToken(false);
-    }
-  };
-
-  // Copy merchant token to clipboard
-  const copyMerchantToken = () => {
-    navigator.clipboard.writeText(merchantToken);
-    setTokenCopied(true);
-    setTimeout(() => setTokenCopied(false), 2000);
-  };
-
-  // Step 4-8: Verify with signed KYC token
   const handleVerifySignedToken = async () => {
-    if (!signedKycToken.trim()) {
-      setError("Please paste the signed token from your bank");
-      return;
-    }
-
-    setIsVerifying(true);
-    setError("");
-
-    try {
-      const result = await completeKycVerification(signedKycToken);
-
-      if (result.success && result.jwt) {
-        onVerify(result.jwt);
-      } else {
-        setError(result.error || "Verification failed. Please try again.");
-      }
-    } catch (err) {
-      setError(`Verification error: ${err.message}`);
-    } finally {
-      setIsVerifying(false);
+    const result = await verifyToken();
+    if (result.success && result.jwt) {
+      onVerify(result.jwt);
     }
   };
 
@@ -78,6 +40,12 @@ export default function AgeVerificationModal({
     } else {
       window.location.href = "https://www.google.com";
     }
+  };
+
+  const handleSignedTokenChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setSignedKycToken(e.target.value);
   };
 
   return (
@@ -108,11 +76,11 @@ export default function AgeVerificationModal({
             }}
             onMouseEnter={(e) => {
               if (!isVerifying && !isCreatingToken) {
-                e.target.style.backgroundColor = "var(--warm-cream)";
+                e.currentTarget.style.backgroundColor = "var(--warm-cream)";
               }
             }}
             onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "transparent";
+              e.currentTarget.style.backgroundColor = "transparent";
             }}
           >
             ✕
@@ -192,7 +160,7 @@ export default function AgeVerificationModal({
                     }}
                   />
                   <button
-                    onClick={copyMerchantToken}
+                    onClick={copyToken}
                     className="w-full btn-warm-primary px-4 py-2 rounded-lg transition-all duration-300 font-semibold text-sm"
                     style={{
                       backgroundColor: tokenCopied
@@ -306,10 +274,7 @@ export default function AgeVerificationModal({
 
               <textarea
                 value={signedKycToken}
-                onChange={(e) => {
-                  setSignedKycToken(e.target.value);
-                  setError("");
-                }}
+                onChange={handleSignedTokenChange}
                 placeholder="Paste the signed token here..."
                 rows={3}
                 className="w-full px-3 py-3 rounded-lg border-2 focus:outline-none transition-colors mb-4 font-mono text-xs"
@@ -319,10 +284,12 @@ export default function AgeVerificationModal({
                   borderColor: error ? "#dc2626" : "var(--border-warm)",
                 }}
                 onFocus={(e) => {
-                  if (!error) e.target.style.borderColor = "var(--warm-orange)";
+                  if (!error)
+                    e.currentTarget.style.borderColor = "var(--warm-orange)";
                 }}
                 onBlur={(e) => {
-                  if (!error) e.target.style.borderColor = "var(--border-warm)";
+                  if (!error)
+                    e.currentTarget.style.borderColor = "var(--border-warm)";
                 }}
                 disabled={isVerifying}
               />
@@ -455,7 +422,7 @@ export default function AgeVerificationModal({
                 </div>
 
                 <button
-                  onClick={copyMerchantToken}
+                  onClick={copyToken}
                   className="w-full btn-warm-primary px-6 py-3 mt-3 rounded-lg transition-all duration-300 font-semibold"
                   style={{
                     backgroundColor: tokenCopied
@@ -515,10 +482,10 @@ export default function AgeVerificationModal({
                   fontWeight: "600",
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.color = "var(--warm-brown)";
+                  e.currentTarget.style.color = "var(--warm-brown)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.color = "var(--warm-orange)";
+                  e.currentTarget.style.color = "var(--warm-orange)";
                 }}
               >
                 THE IRON BANK
@@ -549,10 +516,7 @@ export default function AgeVerificationModal({
             </label>
             <textarea
               value={signedKycToken}
-              onChange={(e) => {
-                setSignedKycToken(e.target.value);
-                setError("");
-              }}
+              onChange={handleSignedTokenChange}
               placeholder="Paste the signed token here..."
               rows={4}
               className="w-full px-4 py-3 rounded-lg border-2 focus:outline-none transition-colors mb-4 font-mono text-xs"
@@ -562,10 +526,12 @@ export default function AgeVerificationModal({
                 borderColor: error ? "#dc2626" : "var(--border-warm)",
               }}
               onFocus={(e) => {
-                if (!error) e.target.style.borderColor = "var(--warm-orange)";
+                if (!error)
+                  e.currentTarget.style.borderColor = "var(--warm-orange)";
               }}
               onBlur={(e) => {
-                if (!error) e.target.style.borderColor = "var(--border-warm)";
+                if (!error)
+                  e.currentTarget.style.borderColor = "var(--border-warm)";
               }}
               disabled={isVerifying}
             />
@@ -596,13 +562,13 @@ export default function AgeVerificationModal({
             }}
             onMouseEnter={(e) => {
               if (!isVerifying && !isCreatingToken) {
-                e.target.style.backgroundColor = "var(--warm-cream)";
-                e.target.style.color = "var(--warm-brown)";
+                e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                e.currentTarget.style.color = "var(--warm-brown)";
               }
             }}
             onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "transparent";
-              e.target.style.color = "var(--text-secondary)";
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "var(--text-secondary)";
             }}
           >
             I'm Under 21 - Exit

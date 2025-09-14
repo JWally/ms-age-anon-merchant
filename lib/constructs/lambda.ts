@@ -10,12 +10,14 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
 import { Duration } from "aws-cdk-lib";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
+import { SecretConstruct } from "./secrets";
 
 interface LambdaConstructProps {
   environment: string;
   stackName: string;
   stage: string;
   projectName: string;
+  secretConstruct: SecretConstruct;
 }
 
 /**
@@ -34,7 +36,8 @@ export class LambdaConstruct extends Construct {
   constructor(scope: Construct, id: string, props: LambdaConstructProps) {
     super(scope, id);
 
-    const { environment, stackName, projectName, stage } = props;
+    const { environment, stackName, projectName, stage, secretConstruct } =
+      props;
 
     // 2) Common Lambda configuration
     const commonConfig = {
@@ -54,7 +57,9 @@ export class LambdaConstruct extends Construct {
         ENVIRONMENT: environment,
         POWERTOOLS_SERVICE_NAME: stackName,
         POWERTOOLS_METRICS_NAMESPACE: stackName,
-        LOG_LEVEL: "INFO",
+        LOG_LEVEL: environment === "prod" ? "INFO" : "DEBUG",
+        SECRET_ARN: secretConstruct.secret.secretArn,
+        KEY_CACHE_DURATION_MS: "900000", // 15 minutes
       },
       tracing: Tracing.ACTIVE,
       LogRetention: RetentionDays.TWO_WEEKS,
@@ -87,6 +92,9 @@ export class LambdaConstruct extends Construct {
 
     // 5) Attach logging policy
     this.verifyFunction.addToRolePolicy(IAM_LOGGING_POLICY);
+
+    // Grant secrets read access to both functions
+    secretConstruct.secret.grantRead(this.verifyFunction);
 
     // 6) Create alarms for each Lambda
     this.createLambdaAlarms(this.verifyFunction, "verifyFn");

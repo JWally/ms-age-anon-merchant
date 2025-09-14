@@ -3,6 +3,7 @@
 
 import { client, utils } from "@passwordless-id/webauthn";
 import { base64traverse } from "./misc";
+import { useCryptoSession } from "./cryptoSession";
 
 interface MerchantToken {
   credential: {
@@ -142,6 +143,10 @@ export const completeKycVerification = async (
   error?: string;
 }> => {
   try {
+    const cryptoSession = useCryptoSession();
+
+    const sessionToken = await cryptoSession.getVerificationToken();
+
     // Step 6: Perform WebAuthn authentication
     const { authentication } =
       await authenticateWithSignedToken(signedKycTokenString);
@@ -152,7 +157,10 @@ export const completeKycVerification = async (
 
     const response = await fetch(`https://${APIURL}/v1/verify`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-verification-token": sessionToken,
+      },
       body: JSON.stringify(authentication),
     });
 
@@ -162,11 +170,7 @@ export const completeKycVerification = async (
 
     const result = await response.json();
 
-    // if (result.success && result.jwt) {
-    //   localStorage.setItem("age-verification-jwt", result.jwt);
-    //   localStorage.setItem("age-verified", "true");
-    //   localStorage.setItem("age-verified-timestamp", Date.now().toString());
-    // }
+    console.log({ result });
 
     return { jwt: "OK", success: true };
   } catch (error) {

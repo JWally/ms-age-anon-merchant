@@ -1,4 +1,4 @@
-// src/App.tsx – HornPub with simplified age verification
+// src/App.tsx – HornPub with crypto session management
 import React, { useEffect, useMemo, useState } from "react";
 import Navbar from "./components/Navbar";
 import HomePage from "./components/HomePage";
@@ -9,6 +9,7 @@ import ReservationsPage from "./components/ReservationsPage";
 import EventsPage from "./components/EventsPage";
 import AgeVerificationModal from "./components/AgeVerificationModal";
 import { CartProvider } from "./context/CartContext";
+import { useCryptoSession } from "./utils/cryptoSession";
 
 const useRouteComponent = (path: string) =>
   useMemo(() => {
@@ -35,48 +36,63 @@ const useRouteComponent = (path: string) =>
 
 const App: React.FC = () => {
   const [path, setPath] = useState(() => window.location.pathname);
-  const [isAgeVerified, setIsAgeVerified] = useState<boolean>(false);
-  const [isCheckingVerification, setIsCheckingVerification] =
-    useState<boolean>(true);
+  const [isInitializing, setIsInitializing] = useState<boolean>(true);
+  const cryptoSession = useCryptoSession();
 
-  // Check for existing age verification on app load
+  // Initialize crypto session on app load
   useEffect(() => {
-    const checkAgeVerification = async () => {
+    const initSession = async () => {
       try {
-        // Check localStorage for existing JWT
-        const storedJwt = localStorage.getItem("age-verification-jwt");
+        await cryptoSession.init();
+        console.log("Crypto session initialized");
 
-        if (storedJwt) {
-          // Validate the JWT with server (or use demo validation)
-          const { validateJwt } = await import("./utils/webauthn");
-          const isValid = await validateJwt(storedJwt);
-          setIsAgeVerified(isValid);
+        const publicKey = await cryptoSession.getVerificationToken();
+
+        console.log({ publicKey });
+
+        // Check if we have an existing valid session
+        if (cryptoSession.isAuthenticated()) {
+          console.log("Found existing valid session");
         } else {
-          setIsAgeVerified(false);
+          console.log("No valid session found");
         }
       } catch (error) {
-        console.error("Error checking age verification:", error);
-        setIsAgeVerified(false);
+        console.error("Error initializing crypto session:", error);
       } finally {
-        setIsCheckingVerification(false);
+        setIsInitializing(false);
       }
     };
 
-    checkAgeVerification();
-  }, []);
+    initSession();
+
+    // Cleanup on unmount
+    return () => {
+      cryptoSession.destroy();
+    };
+  }, [cryptoSession]);
 
   // Handle successful age verification
-  const handleAgeVerification = (jwt: string) => {
-    // Store JWT and mark as verified
-    localStorage.setItem("age-verification-jwt", jwt);
-    localStorage.setItem("age-verified", "true");
-    localStorage.setItem("age-verified-timestamp", Date.now().toString());
-    setIsAgeVerified(true);
+  const handleAgeVerification = async (webauthnToken: string) => {
+    try {
+      //const success = await cryptoSession.login(webauthnToken);
+      const success = true;
+      if (success) {
+        console.log("Age verification successful - crypto session created");
+        // Force re-render by updating a dummy state or just rely on the session check
+        setPath(window.location.pathname); // Force re-render
+      } else {
+        console.error("Age verification failed");
+        // Could show error message to user here
+      }
+    } catch (error) {
+      console.error("Age verification error:", error);
+      // Could show error message to user here
+    }
   };
 
   // Handle age verification cancellation
   const handleVerificationCancel = () => {
-    // Redirect to a safe site
+    cryptoSession.logout(); // Clean up any partial session state
     window.location.href = "https://www.google.com";
   };
 
@@ -92,8 +108,8 @@ const App: React.FC = () => {
 
   const CurrentPage = useRouteComponent(path);
 
-  // Show loading state while checking verification
-  if (isCheckingVerification) {
+  // Show loading state while initializing crypto session
+  if (isInitializing) {
     return (
       <div className="warm-gradient min-h-screen flex items-center justify-center">
         <div
@@ -106,8 +122,8 @@ const App: React.FC = () => {
     );
   }
 
-  // Show age verification modal if not verified
-  if (!isAgeVerified) {
+  // Show age verification modal if not authenticated
+  if (!cryptoSession.isAuthenticated()) {
     return (
       <div className="warm-gradient min-h-screen">
         <AgeVerificationModal
@@ -118,7 +134,7 @@ const App: React.FC = () => {
     );
   }
 
-  // Show main app if age verified
+  // Show main app if authenticated
   return (
     <CartProvider>
       <Navbar />
