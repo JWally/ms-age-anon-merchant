@@ -79,6 +79,17 @@ class CryptoSession {
   }
 
   /**
+   * Emit a custom event when session state changes
+   */
+  private emitSessionChange(authenticated: boolean): void {
+    window.dispatchEvent(
+      new CustomEvent("session-changed", {
+        detail: { authenticated },
+      }),
+    );
+  }
+
+  /**
    * Export the public key as a base64-encoded string.
    * This is used in verification tokens sent to the server.
    */
@@ -222,6 +233,8 @@ class CryptoSession {
       };
 
       localStorage.setItem("crypto-session", JSON.stringify(sessionData));
+
+      this.emitSessionChange(true);
     } catch (error) {
       console.error("Failed to store session token:", error);
       throw error;
@@ -324,6 +337,37 @@ class CryptoSession {
     }
     this.keyPair = null;
     this.logout();
+  }
+
+  // Add to CryptoSession class in utils/cryptoSession.ts
+
+  /**
+   * Get time until session expires (in milliseconds)
+   * Returns 0 if no session or already expired
+   */
+  async getTimeUntilExpiration(): Promise<number> {
+    const session = await this.getSession();
+    if (!session) return 0;
+
+    const timeLeft = session.expiration - Date.now();
+    return Math.max(0, timeLeft);
+  }
+
+  /**
+   * Check if session will expire soon (within specified minutes)
+   */
+  async isExpiringSoon(withinMinutes: number = 5): Promise<boolean> {
+    const timeLeft = await this.getTimeUntilExpiration();
+    return timeLeft > 0 && timeLeft < withinMinutes * 60 * 1000;
+  }
+
+  /**
+   * Extend session if possible (would require server support)
+   */
+  async extendSession(): Promise<boolean> {
+    // This would need server API support
+    console.log("Session extension not yet implemented");
+    return false;
   }
 }
 
