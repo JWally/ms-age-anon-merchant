@@ -77,17 +77,6 @@ export const createMerchantToken = async (): Promise<string> => {
       userHandle: registration.user?.id,
     };
 
-    // Store for future authentication
-    localStorage.setItem("webauthn-credential-id", merchantToken.credential.id);
-    localStorage.setItem(
-      "webauthn-public-key",
-      merchantToken.credential.publicKey,
-    );
-    localStorage.setItem(
-      "webauthn-algorithm",
-      merchantToken.credential.algorithm.toString(),
-    );
-
     return btoa(JSON.stringify(merchantToken));
   } catch (error) {
     console.error("WebAuthn registration failed:", error);
@@ -170,9 +159,9 @@ export const completeKycVerification = async (
 
     const result = await response.json();
 
-    console.log({ result });
+    cryptoSession.storeSessionToken(result.sessionToken);
 
-    return { jwt: "OK", success: true };
+    return { ...result, success: true };
   } catch (error) {
     return {
       success: false,
@@ -182,98 +171,7 @@ export const completeKycVerification = async (
   }
 };
 
-// Utility functions (same as before)
-export const isUserVerified = (): boolean => {
-  const jwt = localStorage.getItem("age-verification-jwt");
-  const timestamp = localStorage.getItem("age-verified-timestamp");
-
-  if (!jwt || !timestamp) return false;
-
-  const dayInMs = 24 * 60 * 60 * 1000;
-  const isRecent = Date.now() - parseInt(timestamp) < dayInMs;
-
-  return isRecent;
-};
-
-export const clearVerification = (): void => {
-  localStorage.removeItem("webauthn-credential-id");
-  localStorage.removeItem("webauthn-public-key");
-  localStorage.removeItem("webauthn-algorithm");
-  localStorage.removeItem("age-verification-jwt");
-  localStorage.removeItem("age-verified");
-  localStorage.removeItem("age-verified-timestamp");
-};
-
-export const validateJwt = async (jwt: string): Promise<boolean> => {
-  try {
-    const response = await fetch("/api/validate-jwt", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
-      },
-    }).catch(() => ({
-      ok: true,
-      json: async () => ({ valid: jwt.startsWith("demo-jwt-") }),
-    }));
-
-    if (response.ok) {
-      const data = await response.json();
-      return data.valid === true;
-    }
-
-    return false;
-  } catch (error) {
-    console.error("JWT validation error:", error);
-    return false;
-  }
-};
-
 // Helper: Check if WebAuthn is available
 export const isWebAuthnAvailable = (): boolean => {
   return !!(window.PublicKeyCredential && window.navigator.credentials);
 };
-
-/*
-Server-side verification example using @passwordless-id/webauthn:
-
-import { server } from '@passwordless-id/webauthn';
-
-// Verify registration
-const expected = {
-  challenge: 'the-challenge-sent-to-client',
-  origin: 'https://yoursite.com',
-  userVerified: true // if you required user verification
-};
-
-try {
-  const registrationParsed = await server.verifyRegistration(registration, expected);
-  // Store registrationParsed.credential.id and registrationParsed.credential.publicKey 
-  // in your database for future authentications
-  console.log('Registration verified:', registrationParsed);
-} catch (error) {
-  console.error('Registration verification failed:', error);
-}
-
-// Verify authentication
-const credentialKey = {
-  id: 'stored-credential-id',
-  publicKey: 'stored-public-key',  
-  algorithm: 'ES256' // or whatever algorithm was used
-};
-
-const expected = {
-  challenge: 'the-challenge-sent-to-client',
-  origin: 'https://yoursite.com',
-  userVerified: true,
-  counter: -1 // disable counter checks, or use stored counter value
-};
-
-try {
-  const authenticationParsed = await server.verifyAuthentication(authentication, credentialKey, expected);
-  console.log('Authentication verified:', authenticationParsed);
-  // User is now authenticated!
-} catch (error) {
-  console.error('Authentication verification failed:', error);
-}
-*/
