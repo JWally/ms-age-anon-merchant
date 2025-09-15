@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Link from "./Link";
 import { CartContext } from "../context/CartContext";
 
@@ -45,12 +45,12 @@ const Navbar = () => {
                   backgroundColor: "transparent",
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "var(--warm-cream)";
-                  e.target.style.color = "var(--warm-brown)";
+                  e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                  e.currentTarget.style.color = "var(--warm-brown)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "transparent";
-                  e.target.style.color = "var(--text-secondary)";
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "var(--text-secondary)";
                 }}
               >
                 Menu
@@ -64,12 +64,12 @@ const Navbar = () => {
                   backgroundColor: "transparent",
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "var(--warm-cream)";
-                  e.target.style.color = "var(--warm-brown)";
+                  e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                  e.currentTarget.style.color = "var(--warm-brown)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "transparent";
-                  e.target.style.color = "var(--text-secondary)";
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "var(--text-secondary)";
                 }}
               >
                 Reservations
@@ -83,12 +83,12 @@ const Navbar = () => {
                   backgroundColor: "transparent",
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "var(--warm-cream)";
-                  e.target.style.color = "var(--warm-brown)";
+                  e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                  e.currentTarget.style.color = "var(--warm-brown)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "transparent";
-                  e.target.style.color = "var(--text-secondary)";
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "var(--text-secondary)";
                 }}
               >
                 Live Music
@@ -168,12 +168,12 @@ const Navbar = () => {
                 style={{ color: "var(--text-secondary)" }}
                 onClick={closeMenu}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "var(--warm-cream)";
-                  e.target.style.color = "var(--warm-brown)";
+                  e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                  e.currentTarget.style.color = "var(--warm-brown)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "transparent";
-                  e.target.style.color = "var(--text-secondary)";
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "var(--text-secondary)";
                 }}
               >
                 Menu
@@ -185,12 +185,12 @@ const Navbar = () => {
                 style={{ color: "var(--text-secondary)" }}
                 onClick={closeMenu}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "var(--warm-cream)";
-                  e.target.style.color = "var(--warm-brown)";
+                  e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                  e.currentTarget.style.color = "var(--warm-brown)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "transparent";
-                  e.target.style.color = "var(--text-secondary)";
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "var(--text-secondary)";
                 }}
               >
                 Reservations
@@ -202,12 +202,12 @@ const Navbar = () => {
                 style={{ color: "var(--text-secondary)" }}
                 onClick={closeMenu}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "var(--warm-cream)";
-                  e.target.style.color = "var(--warm-brown)";
+                  e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                  e.currentTarget.style.color = "var(--warm-brown)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "transparent";
-                  e.target.style.color = "var(--text-secondary)";
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "var(--text-secondary)";
                 }}
               >
                 Live Music
@@ -219,12 +219,12 @@ const Navbar = () => {
                 style={{ color: "var(--text-secondary)" }}
                 onClick={closeMenu}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "var(--warm-cream)";
-                  e.target.style.color = "var(--warm-brown)";
+                  e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                  e.currentTarget.style.color = "var(--warm-brown)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "transparent";
-                  e.target.style.color = "var(--text-secondary)";
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "var(--text-secondary)";
                 }}
               >
                 <div className="flex items-center justify-between">

@@ -173,13 +173,14 @@ function MenuItemPage({ menuItemId }: MenuItemPageProps): JSX.Element {
                     }}
                     onMouseEnter={(e) => {
                       if (!e.currentTarget.disabled) {
-                        e.target.style.backgroundColor = "var(--warm-cream)";
-                        e.target.style.color = "var(--warm-brown)";
+                        e.currentTarget.style.backgroundColor =
+                          "var(--warm-cream)";
+                        e.currentTarget.style.color = "var(--warm-brown)";
                       }
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "transparent";
-                      e.target.style.color = "var(--text-secondary)";
+                      e.currentTarget.style.backgroundColor = "transparent";
+                      e.currentTarget.style.color = "var(--text-secondary)";
                     }}
                   >
                     -
@@ -200,13 +201,14 @@ function MenuItemPage({ menuItemId }: MenuItemPageProps): JSX.Element {
                     }}
                     onMouseEnter={(e) => {
                       if (!e.currentTarget.disabled) {
-                        e.target.style.backgroundColor = "var(--warm-cream)";
-                        e.target.style.color = "var(--warm-brown)";
+                        e.currentTarget.style.backgroundColor =
+                          "var(--warm-cream)";
+                        e.currentTarget.style.color = "var(--warm-brown)";
                       }
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "transparent";
-                      e.target.style.color = "var(--text-secondary)";
+                      e.currentTarget.style.backgroundColor = "transparent";
+                      e.currentTarget.style.color = "var(--text-secondary)";
                     }}
                   >
                     +
@@ -251,12 +253,12 @@ function MenuItemPage({ menuItemId }: MenuItemPageProps): JSX.Element {
                   color: "var(--text-secondary)",
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "var(--warm-cream)";
-                  e.target.style.color = "var(--warm-brown)";
+                  e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                  e.currentTarget.style.color = "var(--warm-brown)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "transparent";
-                  e.target.style.color = "var(--text-secondary)";
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "var(--text-secondary)";
                 }}
               >
                 Back to Menu

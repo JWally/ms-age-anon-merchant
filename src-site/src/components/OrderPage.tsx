@@ -1,61 +1,22 @@
 import React, { useState, useContext, useEffect, JSX } from "react";
 import { CartContext } from "../context/CartContext";
-import { DEMO_API_URL } from "../utils/constants";
-import { getSessionId } from "../utils/helpers";
 
 function OrderPage(): JSX.Element {
   const { cart, removeFromCart, updateQuantity, getCartTotal, emptyCart } =
     useContext(CartContext)!;
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [sessionId, setSessionId] = useState<string>("");
-
-  useEffect(() => {
-    // If there's an existing session ID in sessionStorage, use it.
-    // Otherwise generate a new one.
-    const existingSessionId = sessionStorage.getItem("session-id");
-    if (existingSessionId) {
-      setSessionId(existingSessionId);
-    } else {
-      const newSessionId = getSessionId();
-      setSessionId(newSessionId);
-    }
-  }, []);
 
   const handleSubmit = async () => {
-    if (!sessionId) return; // Safety check
-
     setIsSubmitting(true);
     try {
-      // 1) Send the session ID to your backend
-      await fetch(DEMO_API_URL, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ "session-id": sessionId }),
-      })
-        .then(async (response) => {
-          if (response.ok) {
-            // 2) Push user to order-summary page with the sessionId in querystring
-            window.history.pushState(
-              {},
-              "",
-              `/order-confirmation?session-id=${sessionId}`,
-            );
-            window.dispatchEvent(new PopStateEvent("popstate"));
+      alert("ORDER SENT!");
 
-            // 3) Empty the cart
-            emptyCart();
+      // 3) Empty the cart
+      emptyCart();
 
-            // 4) Remove from sessionStorage right away
-            sessionStorage.removeItem("session-id");
-          } else {
-            alert("Failed to submit order http status: " + response.status);
-          }
-        })
-        .catch((error) => {
-          console.error("Error submitting order:", error);
-          alert("Failed to submit order. Check the console log or try again.");
-        });
+      // 4) Remove from sessionStorage right away
+      sessionStorage.removeItem("session-id");
     } catch (err) {
       console.error(err);
     } finally {
@@ -185,13 +146,15 @@ function OrderPage(): JSX.Element {
                             backgroundColor: "transparent",
                           }}
                           onMouseEnter={(e) => {
-                            e.target.style.backgroundColor =
+                            e.currentTarget.style.backgroundColor =
                               "var(--warm-cream)";
-                            e.target.style.color = "var(--warm-brown)";
+                            e.currentTarget.style.color = "var(--warm-brown)";
                           }}
                           onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = "transparent";
-                            e.target.style.color = "var(--text-secondary)";
+                            e.currentTarget.style.backgroundColor =
+                              "transparent";
+                            e.currentTarget.style.color =
+                              "var(--text-secondary)";
                           }}
                         >
                           -
@@ -212,13 +175,15 @@ function OrderPage(): JSX.Element {
                             backgroundColor: "transparent",
                           }}
                           onMouseEnter={(e) => {
-                            e.target.style.backgroundColor =
+                            e.currentTarget.style.backgroundColor =
                               "var(--warm-cream)";
-                            e.target.style.color = "var(--warm-brown)";
+                            e.currentTarget.style.color = "var(--warm-brown)";
                           }}
                           onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = "transparent";
-                            e.target.style.color = "var(--text-secondary)";
+                            e.currentTarget.style.backgroundColor =
+                              "transparent";
+                            e.currentTarget.style.color =
+                              "var(--text-secondary)";
                           }}
                         >
                           +
@@ -242,12 +207,12 @@ function OrderPage(): JSX.Element {
                           border: "1px solid #dc2626",
                         }}
                         onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = "#dc2626";
-                          e.target.style.color = "white";
+                          e.currentTarget.style.backgroundColor = "#dc2626";
+                          e.currentTarget.style.color = "white";
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = "transparent";
-                          e.target.style.color = "#dc2626";
+                          e.currentTarget.style.backgroundColor = "transparent";
+                          e.currentTarget.style.color = "#dc2626";
                         }}
                       >
                         Remove
@@ -321,12 +286,12 @@ function OrderPage(): JSX.Element {
                     color: "var(--text-secondary)",
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "var(--warm-cream)";
-                    e.target.style.color = "var(--warm-brown)";
+                    e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                    e.currentTarget.style.color = "var(--warm-brown)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent";
-                    e.target.style.color = "var(--text-secondary)";
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "var(--text-secondary)";
                   }}
                 >
                   Clear Order

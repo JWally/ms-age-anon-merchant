@@ -2,7 +2,7 @@ export const menuItems = [
   // ---- Appetizers (Yummy Appetizers) ----
   {
     id: 1,
-    name: "One Time At Bandcamp Platter",
+    name: "Bandcamp Platter",
     price: 28.95,
     image: "/bandcamp.png",
     category: "Yummy Appetizers",
@@ -11,7 +11,7 @@ export const menuItems = [
   },
   {
     id: 2,
-    name: "Dirty Sanchez Queso",
+    name: "Dirty Queso",
     price: 9.95,
     image: "/nachos.png",
     category: "Yummy Appetizers",
@@ -20,7 +20,7 @@ export const menuItems = [
   },
   {
     id: 3,
-    name: "Back-Door Sliders",
+    name: "Big Brass Sliders",
     price: 12.95,
     image: "/sliders.png",
     category: "Yummy Appetizers",
@@ -30,7 +30,7 @@ export const menuItems = [
   // ---- Mains ----
   {
     id: 4,
-    name: "Rusty Trombone",
+    name: "Old Trombone",
     price: 16.95,
     image: "/rusty-trombone.png",
     category: "mains",
@@ -39,7 +39,7 @@ export const menuItems = [
   },
   {
     id: 5,
-    name: "Raw Dog",
+    name: "Horn Dog",
     price: 18.5,
     image: "/raw-dog.png",
     category: "mains",
@@ -48,7 +48,7 @@ export const menuItems = [
   },
   {
     id: 6,
-    name: "Alabama Hot Pocket",
+    name: "Fancy Hot Pocket",
     price: 14.95,
     image: "/hot-pocket.png",
     category: "mains",
@@ -57,7 +57,7 @@ export const menuItems = [
   },
   {
     id: 7,
-    name: "Cleveland Steamer",
+    name: "Seafood Steamer",
     price: 19.95,
     image: "/steamer.png",
     category: "mains",
@@ -67,7 +67,7 @@ export const menuItems = [
   // ---- Dessert - Do It ----
   {
     id: 9,
-    name: "Kentucky Klondike Bar",
+    name: "Southern Klondike Bar",
     price: 9.95,
     image: "/ice-cream.png",
     category: "Dessert - Do It",
@@ -76,7 +76,7 @@ export const menuItems = [
   },
   {
     id: 10,
-    name: "Blumpkin Spice Brownie à la Mode",
+    name: "Pumpkin Spice Brownie à la Mode",
     price: 8.95,
     image: "/brownie.png",
     category: "Dessert - Do It",
@@ -87,7 +87,7 @@ export const menuItems = [
   // ---- Drinks ----
   {
     id: 11,
-    name: "The Night Before The Morning After",
+    name: "Beer",
     price: 6.5,
     image: "/beer.png",
     category: "drinks",
@@ -96,7 +96,7 @@ export const menuItems = [
   },
   {
     id: 12,
-    name: "Sex on the Beach",
+    name: "Sax on the Beach",
     price: 12.0,
     image: "/sex-on-beach.png",
     category: "drinks",
@@ -105,7 +105,7 @@ export const menuItems = [
   },
   {
     id: 13,
-    name: "Sloppy Seconds Margarita",
+    name: "Sloppy Margarita",
     price: 11.5,
     image: "/margarita.png",
     category: "drinks",
