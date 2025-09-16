@@ -6,8 +6,9 @@ import { EcSignData, EcVerifySig } from "@justinwwolcott/ez-web-crypto";
  * Key responsibilities:
  * - Generate and store non-extractable ECDSA key pairs in IndexedDB
  * - Create verification tokens (public key + timestamp + signature)
- * - Store and validate server-issued session tokens
+ * - Store and validate server-issued session tokens as a single string
  * - Sign challenges for authenticated API requests
+ * - Validate session integrity on every access
  */
 class CryptoSession {
   private db: IDBDatabase | null = null;
@@ -79,50 +80,56 @@ class CryptoSession {
   }
 
   /**
-   * Emit a custom event when session state changes
+   * Parse session token string into components.
+   * Token format: SERVER_PUB.CLIENT_PUB.TTL.SERVER_SIGNATURE
    */
-  private emitSessionChange(authenticated: boolean): void {
-    window.dispatchEvent(
-      new CustomEvent("session-changed", {
-        detail: { authenticated },
-      }),
-    );
+  private parseSessionToken(token: string): {
+    serverPublicKey: string;
+    clientPublicKey: string;
+    expiration: number;
+    serverSignature: string;
+  } | null {
+    const parts = token.split(".");
+    if (parts.length !== 4) {
+      console.error("Invalid session token format");
+      return null;
+    }
+
+    const [serverPub, clientPub, ttlString, serverSignature] = parts;
+    const ttl = parseInt(ttlString, 10);
+
+    if (isNaN(ttl)) {
+      console.error("Invalid TTL in session token");
+      return null;
+    }
+
+    return {
+      serverPublicKey: serverPub,
+      clientPublicKey: clientPub,
+      expiration: ttl,
+      serverSignature: serverSignature,
+    };
   }
 
   /**
-   * Export the public key as a base64-encoded string.
-   * This is used in verification tokens sent to the server.
-   */
-  async getPublicKey(): Promise<string> {
-    if (!this.keyPair) throw new Error("Not initialized");
-
-    const exported = await crypto.subtle.exportKey(
-      "spki",
-      this.keyPair.publicKey,
-    );
-    return btoa(String.fromCharCode(...new Uint8Array(exported)));
-  }
-
-  /**
-   * Validate a session token with three security checks:
+   * Validate a session token with comprehensive security checks.
+   * This is called EVERY time the session is accessed.
+   *
+   * Performs three critical validations:
    * 1. TTL validation - ensure session hasn't expired
    * 2. Server signature verification - verify server signed the token data
    * 3. Client key consistency - verify current client has same private key
    */
-  async isValidSession(session: unknown, target: string): Promise<boolean> {
+  private async validateSessionToken(token: string): Promise<boolean> {
     console.log("-".repeat(80));
-    console.log({ session });
+    console.log("Validating session token...");
 
     try {
-      // Type assertion for the session data structure
-      const sessionData = session as {
-        token: string;
-        serverPublicKey: string;
-        clientPublicKey: string;
-        expiration: number;
-        serverSignature: string;
-        storedAt: number;
-      };
+      const sessionData = this.parseSessionToken(token);
+      if (!sessionData) {
+        console.log("❌ Invalid token format");
+        return false;
+      }
 
       // Check 1: TTL validation - ensure session hasn't expired
       if (Date.now() >= sessionData.expiration) {
@@ -148,15 +155,14 @@ class CryptoSession {
       console.log("✅ Server signature verification passed");
 
       // Check 3: Client key consistency validation
-      // Sign a test message with current private key and verify with stored client public key
-      // This ensures the current session has the same key pair that was originally authenticated
-      const testMessage = `session-validation-${Date.now()}`;
-      const testSignature = await this.sign(testMessage);
+      // Sign current timestamp and verify with stored client public key
+      const timestampMessage = `session-check-${Date.now()}`;
+      const timestampSignature = await this.sign(timestampMessage);
 
       const clientSigValid = await EcVerifySig(
         sessionData.clientPublicKey,
-        testSignature,
-        btoa(testMessage),
+        timestampSignature,
+        btoa(timestampMessage),
       );
 
       if (!clientSigValid) {
@@ -171,6 +177,39 @@ class CryptoSession {
       console.error("❌ Session validation error:", error);
       return false;
     }
+  }
+
+  /**
+   * Get the raw session token from storage.
+   * Returns null if no token exists.
+   */
+  private getRawSessionToken(): string | null {
+    return localStorage.getItem("crypto-session");
+  }
+
+  /**
+   * Emit a custom event when session state changes
+   */
+  private emitSessionChange(authenticated: boolean): void {
+    window.dispatchEvent(
+      new CustomEvent("session-changed", {
+        detail: { authenticated },
+      }),
+    );
+  }
+
+  /**
+   * Export the public key as a base64-encoded string.
+   * This is used in verification tokens sent to the server.
+   */
+  async getPublicKey(): Promise<string> {
+    if (!this.keyPair) throw new Error("Not initialized");
+
+    const exported = await crypto.subtle.exportKey(
+      "spki",
+      this.keyPair.publicKey,
+    );
+    return btoa(String.fromCharCode(...new Uint8Array(exported)));
   }
 
   /**
@@ -204,37 +243,23 @@ class CryptoSession {
 
   /**
    * Store a session token received from the server after successful authentication.
-   * Token format: SERVER_PUB.CLIENT_PUB.SERVER_TTL.SERVER_SIGNATURE
+   * Token format: SERVER_PUB.CLIENT_PUB.TTL.SERVER_SIGNATURE
+   * Stored as a single string, validated on every access.
    */
-  storeSessionToken(sessionToken: string): void {
-    console.log("SETTING STORAGE TOKEN!!!");
+  async storeSessionToken(sessionToken: string): Promise<void> {
+    console.log("Storing session token...");
+
     try {
-      // Parse the session token to extract TTL
-      const parts = sessionToken.split(".");
-      if (parts.length !== 4) {
-        throw new Error("Invalid session token format");
+      // Validate the token before storing
+      if (!(await this.validateSessionToken(sessionToken))) {
+        throw new Error("Invalid session token - validation failed");
       }
 
-      const [serverPub, clientPub, ttlString, serverSignature] = parts;
-      const ttl = parseInt(ttlString, 10);
-
-      if (isNaN(ttl)) {
-        throw new Error("Invalid TTL in session token");
-      }
-
-      // Store the session with expiration time
-      const sessionData = {
-        token: sessionToken,
-        serverPublicKey: serverPub,
-        clientPublicKey: clientPub,
-        expiration: ttl, // TTL is already a timestamp
-        serverSignature: serverSignature,
-        storedAt: Date.now(),
-      };
-
-      localStorage.setItem("crypto-session", JSON.stringify(sessionData));
+      // Store as a single string
+      localStorage.setItem("crypto-session", sessionToken);
 
       this.emitSessionChange(true);
+      console.log("Session token stored successfully");
     } catch (error) {
       console.error("Failed to store session token:", error);
       throw error;
@@ -243,26 +268,20 @@ class CryptoSession {
 
   /**
    * Get the current session token if it exists and is valid.
+   * Performs full validation on every access.
    */
   async getSessionToken(): Promise<string | null> {
     try {
-      const stored = localStorage.getItem("crypto-session");
-      if (!stored) return null;
+      const token = this.getRawSessionToken();
+      if (!token) return null;
 
-      const session = JSON.parse(stored);
-
-      // Check if the session has expired
-      if (Date.now() > session.expiration) {
+      // Validate on every access
+      if (!(await this.validateSessionToken(token))) {
         this.logout();
         return null;
       }
 
-      if (!(await this.isValidSession(session, stored))) {
-        this.logout();
-        return null;
-      }
-
-      return session.token;
+      return token;
     } catch (error) {
       console.error("Failed to get session token:", error);
       this.logout(); // Clear corrupted session data
@@ -272,6 +291,7 @@ class CryptoSession {
 
   /**
    * Check if the current session is valid (exists and not expired).
+   * Performs full validation including signature checks.
    */
   async isAuthenticated(): Promise<boolean> {
     const token = await this.getSessionToken();
@@ -279,27 +299,15 @@ class CryptoSession {
   }
 
   /**
-   * Get the full session data for debugging or advanced use cases.
+   * Get parsed session data for debugging or advanced use cases.
+   * Still validates the session before returning data.
    */
   async getSession(): Promise<any> {
     try {
-      const stored = localStorage.getItem("crypto-session");
-      if (!stored) return null;
+      const token = await this.getSessionToken();
+      if (!token) return null;
 
-      const session = JSON.parse(stored);
-
-      // Check if expired
-      if (Date.now() > session.expiration) {
-        this.logout();
-        return null;
-      }
-
-      if (!(await this.isValidSession(session, stored))) {
-        this.logout();
-        return null;
-      }
-
-      return session;
+      return this.parseSessionToken(token);
     } catch (error) {
       console.error("Failed to get session:", error);
       this.logout();
@@ -310,6 +318,7 @@ class CryptoSession {
   /**
    * Sign a challenge from the server using the stored private key.
    * Used for authenticated API requests.
+   * Validates session before signing.
    */
   async signChallenge(challenge: string): Promise<string> {
     if (!(await this.isAuthenticated())) {
@@ -319,42 +328,24 @@ class CryptoSession {
   }
 
   /**
-   * Clear the session and log out the user.
-   * Removes session data from localStorage but keeps cryptographic keys.
-   */
-  logout(): void {
-    localStorage.removeItem("crypto-session");
-  }
-
-  /**
-   * Completely destroy the session and close database connections.
-   * Call this when the app is shutting down.
-   */
-  destroy(): void {
-    if (this.db) {
-      this.db.close();
-      this.db = null;
-    }
-    this.keyPair = null;
-    this.logout();
-  }
-
-  // Add to CryptoSession class in utils/cryptoSession.ts
-
-  /**
    * Get time until session expires (in milliseconds)
    * Returns 0 if no session or already expired
+   * Validates session before checking expiration
    */
   async getTimeUntilExpiration(): Promise<number> {
-    const session = await this.getSession();
-    if (!session) return 0;
+    const token = await this.getSessionToken();
+    if (!token) return 0;
 
-    const timeLeft = session.expiration - Date.now();
+    const sessionData = this.parseSessionToken(token);
+    if (!sessionData) return 0;
+
+    const timeLeft = sessionData.expiration - Date.now();
     return Math.max(0, timeLeft);
   }
 
   /**
    * Check if session will expire soon (within specified minutes)
+   * Validates session before checking expiration
    */
   async isExpiringSoon(withinMinutes: number = 5): Promise<boolean> {
     const timeLeft = await this.getTimeUntilExpiration();
@@ -368,6 +359,28 @@ class CryptoSession {
     // This would need server API support
     console.log("Session extension not yet implemented");
     return false;
+  }
+
+  /**
+   * Clear the session and log out the user.
+   * Removes session data from localStorage but keeps cryptographic keys.
+   */
+  logout(): void {
+    localStorage.removeItem("crypto-session");
+    this.emitSessionChange(false);
+  }
+
+  /**
+   * Completely destroy the session and close database connections.
+   * Call this when the app is shutting down.
+   */
+  destroy(): void {
+    if (this.db) {
+      this.db.close();
+      this.db = null;
+    }
+    this.keyPair = null;
+    this.logout();
   }
 }
 
