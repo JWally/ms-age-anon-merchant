@@ -21,3 +21,7 @@ dist/assets
 
 # Lint Cache
 *.eslintcache
+
+# CSS Stuff
+!postcss.config.js
+!tailwind.config.js
