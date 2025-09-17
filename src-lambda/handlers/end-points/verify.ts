@@ -19,6 +19,7 @@ import {
   getCurrentKeyId,
   getPublicKeys,
 } from "../../services/key-management";
+import { verifyBankKycSignature } from "../../services/kyc-verification";
 
 import { base64traverse, get64 } from "../../helpers/misc";
 import { get } from "lodash";
@@ -274,10 +275,60 @@ export const lambdaHandler = async (
     }
 
     // ========================================================================
+    // STEP 4.0: VERIFY BANK'S CRYPTOGRAPHIC SIGNATURE
+    // ========================================================================
+    try {
+      // This function handles:
+      // - Parsing the KYC payload
+      // - Checking if bank domain is approved
+      // - Fetching bank's public keys from their endpoint
+      // - Verifying the cryptographic signature
+      // - Returning validated KYC data
+      const challenge = get64(
+        body,
+        "response.clientDataJSON.challenge",
+      ) as string;
+      await verifyBankKycSignature(challenge);
+
+      logger.info("Bank KYC signature verified successfully", {
+        kycKeyId,
+        // kycData properties will be logged by the bank verification service
+      });
+    } catch (error) {
+      // The bank verification service throws properly formatted HTTP errors
+      if (error instanceof createHttpError.HttpError) {
+        // Log the specific bank verification failure
+        logger.error("Bank KYC verification failed", {
+          statusCode: error.statusCode,
+          message: error.message,
+          kycKeyId,
+        });
+
+        // Add specific metrics for bank verification failures
+        metrics.addMetric("BankVerificationError", "Count", 1);
+        metrics.addMetric(
+          `BankVerificationError${error.statusCode}`,
+          "Count",
+          1,
+        );
+
+        throw error; // Re-throw the formatted error
+      }
+
+      // Handle unexpected errors during bank verification
+      logger.error("Unexpected error during bank KYC verification", {
+        error: error instanceof Error ? error.message : String(error),
+        kycKeyId,
+      });
+      metrics.addMetric("BankVerificationError", "Count", 1);
+      metrics.addMetric("BankVerificationError500", "Count", 1);
+
+      throw createHttpError(500, "Bank verification failed unexpectedly");
+    }
+
+    // ========================================================================
     // STEP 5: LOG SUCCESS AND RETURN RESPONSE
     // ========================================================================
-    // Convert body to base64 for logging (consider security implications)
-    const bodyData = base64traverse(body);
 
     // Log successful verification
     logger.info("Verification successful", {
