@@ -133,6 +133,13 @@ export const APPROVED_BANKS: Record<string, BankConfig> = {
     enabled: true,
     keyParser: parseIronBankKeys,
   },
+  "app.ironbank.click": {
+    domain: "app.ironbank.click",
+    wellKnownPath: "/.well-known/keys",
+    name: "Iron Bank - THE APP",
+    enabled: true,
+    keyParser: parseIronBankKeys,
+  },
   "api.democredit.com": {
     domain: "api.democredit.com",
     wellKnownPath: "/.well-known/jwks.json",
