@@ -74,16 +74,17 @@ const upcomingEvents: Event[] = [
 function EventsPage(): JSX.Element {
   return (
     <div className="warm-gradient min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="text-center mb-12">
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+        {/* Header */}
+        <div className="text-center mb-8 sm:mb-12">
           <h1
-            className="text-5xl font-bold mb-6"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6"
             style={{ color: "var(--warm-brown)" }}
           >
             Live Music & Events
           </h1>
           <p
-            className="text-xl max-w-4xl mx-auto leading-relaxed"
+            className="text-lg sm:text-xl leading-relaxed max-w-3xl mx-auto"
             style={{ color: "var(--text-secondary)" }}
           >
             Experience the best in brass band music while enjoying our delicious
@@ -92,252 +93,322 @@ function EventsPage(): JSX.Element {
           </p>
         </div>
 
-        {/* Regular Events */}
-        <div className="mb-16">
+        {/* Weekly Schedule - Mobile-first single column */}
+        <div className="mb-12 sm:mb-16">
           <h2
-            className="text-4xl font-bold mb-10 text-center"
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-8 sm:mb-10 text-center"
             style={{ color: "var(--warm-brown-light)" }}
           >
             Weekly Schedule
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+          {/* Single column on mobile, 2 column on larger screens */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             {upcomingEvents
               .filter((event) => event.date.includes("Every"))
               .map((event) => (
                 <div
                   key={event.id}
-                  className="warm-card-gradient rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                  className="warm-card-gradient rounded-xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                   style={{ border: "1px solid var(--border-warm)" }}
                 >
-                  <h3
-                    className="text-2xl font-bold mb-4"
-                    style={{ color: "var(--warm-brown)" }}
-                  >
-                    {event.title}
-                  </h3>
+                  <div className="space-y-4">
+                    {/* Event title and pricing */}
+                    <div className="flex justify-between items-start">
+                      <h3
+                        className="text-xl sm:text-2xl font-bold flex-1 pr-4"
+                        style={{ color: "var(--warm-brown)" }}
+                      >
+                        {event.title}
+                      </h3>
+                      {!event.ticketPrice && (
+                        <div className="flex-shrink-0">
+                          <span
+                            className="px-3 py-1 rounded-full text-sm font-semibold text-white"
+                            style={{ backgroundColor: "var(--warm-orange)" }}
+                          >
+                            FREE
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="space-y-3 mb-6">
-                    <div className="flex justify-between">
-                      <span
-                        className="font-semibold"
-                        style={{ color: "var(--warm-orange)" }}
-                      >
-                        When:
-                      </span>
-                      <span style={{ color: "var(--text-secondary)" }}>
-                        {event.date}
-                      </span>
+                    {/* Event details - stacked for mobile readability */}
+                    <div className="space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
+                        <div>
+                          <span
+                            className="font-semibold text-sm"
+                            style={{ color: "var(--warm-orange)" }}
+                          >
+                            When:
+                          </span>
+                          <span
+                            className="ml-2 text-sm sm:text-base"
+                            style={{ color: "var(--text-secondary)" }}
+                          >
+                            {event.date}
+                          </span>
+                        </div>
+                        <div>
+                          <span
+                            className="font-semibold text-sm"
+                            style={{ color: "var(--warm-orange)" }}
+                          >
+                            Time:
+                          </span>
+                          <span
+                            className="ml-2 text-sm sm:text-base"
+                            style={{ color: "var(--text-secondary)" }}
+                          >
+                            {event.time}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span
+                          className="font-semibold text-sm"
+                          style={{ color: "var(--warm-orange)" }}
+                        >
+                          Featuring:
+                        </span>
+                        <span
+                          className="ml-2 text-sm sm:text-base font-medium"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          {event.band}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span
-                        className="font-semibold"
-                        style={{ color: "var(--warm-orange)" }}
-                      >
-                        Time:
-                      </span>
-                      <span style={{ color: "var(--text-secondary)" }}>
-                        {event.time}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span
-                        className="font-semibold"
-                        style={{ color: "var(--warm-orange)" }}
-                      >
-                        Band:
-                      </span>
-                      <span style={{ color: "var(--text-secondary)" }}>
-                        {event.band}
-                      </span>
-                    </div>
+
+                    {/* Description */}
+                    <p
+                      className="text-sm sm:text-base leading-relaxed"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      {event.description}
+                    </p>
                   </div>
-
-                  <p
-                    className="text-sm leading-relaxed mb-6"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    {event.description}
-                  </p>
-
-                  {!event.ticketPrice && (
-                    <div className="text-center">
-                      <span
-                        className="px-4 py-2 rounded-full text-sm font-semibold text-white"
-                        style={{ backgroundColor: "var(--warm-orange)" }}
-                      >
-                        No Cover Charge
-                      </span>
-                    </div>
-                  )}
                 </div>
               ))}
           </div>
         </div>
 
         {/* Special Events */}
-        <div className="mb-16">
+        <div className="mb-12 sm:mb-16">
           <h2
-            className="text-4xl font-bold mb-10 text-center"
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-8 sm:mb-10 text-center"
             style={{ color: "var(--warm-brown-light)" }}
           >
             Special Events
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+          {/* Single column for better mobile experience */}
+          <div className="space-y-6 sm:space-y-8">
             {upcomingEvents
               .filter((event) => !event.date.includes("Every"))
               .map((event) => (
                 <div
                   key={event.id}
-                  className="warm-card-gradient rounded-xl p-10 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                  className="warm-card-gradient rounded-xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                   style={{ border: "1px solid var(--border-warm)" }}
                 >
-                  <div className="flex justify-between items-start mb-6">
-                    <h3
-                      className="text-3xl font-bold"
-                      style={{ color: "var(--warm-brown)" }}
-                    >
-                      {event.title}
-                    </h3>
-                    {event.ticketPrice && (
-                      <span
-                        className="px-4 py-2 rounded-full font-bold text-white text-lg"
-                        style={{ backgroundColor: "var(--warm-orange)" }}
+                  <div className="space-y-6">
+                    {/* Header with title and price */}
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-2 sm:space-y-0">
+                      <h3
+                        className="text-2xl sm:text-3xl font-bold"
+                        style={{ color: "var(--warm-brown)" }}
                       >
-                        ${event.ticketPrice}
-                      </span>
-                    )}
-                  </div>
+                        {event.title}
+                      </h3>
+                      {event.ticketPrice && (
+                        <div className="flex-shrink-0">
+                          <span
+                            className="px-4 py-2 rounded-full font-bold text-white text-lg sm:text-xl"
+                            style={{ backgroundColor: "var(--warm-orange)" }}
+                          >
+                            ${event.ticketPrice}
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="grid grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <span
-                        className="font-semibold block mb-2"
-                        style={{ color: "var(--warm-orange)" }}
-                      >
-                        Date:
-                      </span>
-                      <div style={{ color: "var(--text-primary)" }}>
-                        {event.date}
+                    {/* Event details grid - responsive */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      <div>
+                        <span
+                          className="font-semibold block mb-2 text-sm"
+                          style={{ color: "var(--warm-orange)" }}
+                        >
+                          Date & Time:
+                        </span>
+                        <div style={{ color: "var(--text-primary)" }}>
+                          <div className="font-medium">{event.date}</div>
+                          <div
+                            className="text-sm"
+                            style={{ color: "var(--text-secondary)" }}
+                          >
+                            {event.time}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span
+                          className="font-semibold block mb-2 text-sm"
+                          style={{ color: "var(--warm-orange)" }}
+                        >
+                          Featuring:
+                        </span>
+                        <div
+                          className="font-medium text-base sm:text-lg"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          {event.band}
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <span
-                        className="font-semibold block mb-2"
-                        style={{ color: "var(--warm-orange)" }}
+
+                    {/* Description */}
+                    <p
+                      className="leading-relaxed text-base sm:text-lg"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      {event.description}
+                    </p>
+
+                    {/* Action buttons - stacked on mobile */}
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                      <button className="flex-1 btn-warm-primary px-6 py-3 sm:py-4 rounded-lg transition-all duration-300 font-semibold shadow-lg hover:scale-105">
+                        {event.ticketPrice ? "Buy Tickets" : "Learn More"}
+                      </button>
+                      <button
+                        className="flex-1 sm:flex-initial px-6 py-3 sm:py-4 rounded-lg transition-colors font-medium border-2"
+                        style={{
+                          backgroundColor: "transparent",
+                          borderColor: "var(--border-warm)",
+                          color: "var(--text-secondary)",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor =
+                            "var(--warm-cream)";
+                          e.currentTarget.style.color = "var(--warm-brown)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = "transparent";
+                          e.currentTarget.style.color = "var(--text-secondary)";
+                        }}
                       >
-                        Time:
-                      </span>
-                      <div style={{ color: "var(--text-primary)" }}>
-                        {event.time}
-                      </div>
+                        Share
+                      </button>
                     </div>
-                  </div>
-
-                  <div className="mb-6">
-                    <span
-                      className="font-semibold block mb-2"
-                      style={{ color: "var(--warm-orange)" }}
-                    >
-                      Featuring:
-                    </span>
-                    <div
-                      className="font-medium text-lg"
-                      style={{ color: "var(--text-primary)" }}
-                    >
-                      {event.band}
-                    </div>
-                  </div>
-
-                  <p
-                    className="leading-relaxed mb-8"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    {event.description}
-                  </p>
-
-                  <div className="flex gap-4">
-                    <button className="flex-1 btn-warm-primary px-8 py-4 rounded-lg transition-all duration-300 font-semibold shadow-lg hover:scale-105">
-                      {event.ticketPrice ? "Buy Tickets" : "Learn More"}
-                    </button>
-                    <button
-                      className="px-8 py-4 rounded-lg transition-colors font-medium border-2"
-                      style={{
-                        backgroundColor: "transparent",
-                        borderColor: "var(--border-warm)",
-                        color: "var(--text-secondary)",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--warm-cream)";
-                        e.currentTarget.style.color = "var(--warm-brown)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "transparent";
-                        e.currentTarget.style.color = "var(--text-secondary)";
-                      }}
-                    >
-                      Share
-                    </button>
                   </div>
                 </div>
               ))}
           </div>
         </div>
 
-        {/* Info Section */}
-        <div
-          className="warm-card-gradient rounded-xl p-10 shadow-lg"
-          style={{ border: "1px solid var(--border-warm)" }}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
+        {/* Venue & Event Information - Mobile optimized */}
+        <div className="space-y-8">
+          {/* Performance Space & Private Events - Single column on mobile */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div
+              className="warm-card-gradient rounded-xl p-6 sm:p-8 shadow-lg"
+              style={{ border: "1px solid var(--border-warm)" }}
+            >
               <h3
-                className="text-3xl font-bold mb-6"
+                className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6"
                 style={{ color: "var(--warm-brown)" }}
               >
                 Performance Space
               </h3>
               <div
-                className="space-y-3"
+                className="space-y-3 text-base sm:text-lg"
                 style={{ color: "var(--text-secondary)" }}
               >
-                <p>• Intimate setting with excellent acoustics</p>
-                <p>• Tables positioned for optimal viewing</p>
-                <p>• Full bar service during performances</p>
-                <p>• Kitchen open until 10 PM on show nights</p>
-                <p>• Reservations recommended for show nights</p>
+                <div className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Intimate setting with excellent acoustics</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Tables positioned for optimal viewing</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Full bar service during performances</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Kitchen open until 10 PM on show nights</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Reservations recommended for show nights</span>
+                </div>
               </div>
             </div>
 
-            <div>
+            <div
+              className="warm-card-gradient rounded-xl p-6 sm:p-8 shadow-lg"
+              style={{ border: "1px solid var(--border-warm)" }}
+            >
               <h3
-                className="text-3xl font-bold mb-6"
+                className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6"
                 style={{ color: "var(--warm-brown)" }}
               >
                 Private Events
               </h3>
               <div
-                className="space-y-3"
+                className="space-y-3 text-base sm:text-lg"
                 style={{ color: "var(--text-secondary)" }}
               >
-                <p>• Book our space for private parties</p>
-                <p>• Corporate events and celebrations</p>
-                <p>• Custom music arrangements available</p>
-                <p>• Catering packages for groups</p>
-                <p>• Contact us for availability and pricing</p>
+                <div className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Book our space for private parties</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Corporate events and celebrations</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Custom music arrangements available</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Catering packages for groups</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Contact us for availability and pricing</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="text-center mt-12">
+          {/* Call to Action - Musician Submissions */}
+          <div
+            className="warm-card-gradient rounded-xl p-6 sm:p-8 lg:p-10 shadow-lg text-center"
+            style={{ border: "1px solid var(--border-warm)" }}
+          >
+            <h3
+              className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6"
+              style={{ color: "var(--warm-brown)" }}
+            >
+              Want to Perform at HornPub?
+            </h3>
             <p
-              className="mb-6 text-lg"
+              className="mb-6 sm:mb-8 text-base sm:text-lg max-w-2xl mx-auto"
               style={{ color: "var(--text-secondary)" }}
             >
-              Want to perform at HornPub? We're always looking for talented
-              brass musicians and bands.
+              We're always looking for talented brass musicians and bands to
+              join our lineup. Share your music with our community of music
+              lovers.
             </p>
-            <button className="btn-warm-primary px-10 py-4 rounded-lg transition-all duration-300 font-semibold text-lg shadow-lg hover:scale-105">
+            <button className="btn-warm-primary px-8 py-4 rounded-lg transition-all duration-300 font-semibold text-lg shadow-lg hover:scale-105">
               Submit Demo
             </button>
           </div>

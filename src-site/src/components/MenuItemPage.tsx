@@ -17,15 +17,15 @@ function MenuItemPage({ menuItemId }: MenuItemPageProps): JSX.Element {
   if (!menuItem) {
     return (
       <div className="warm-gradient min-h-screen">
-        <div className="max-w-6xl mx-auto px-4 py-16 text-center">
+        <div className="max-w-4xl mx-auto px-4 py-8 text-center">
           <h1
-            className="text-4xl font-bold mb-6"
+            className="text-3xl sm:text-4xl font-bold mb-6"
             style={{ color: "var(--warm-brown)" }}
           >
             Menu Item Not Found
           </h1>
           <p
-            className="text-xl mb-12"
+            className="text-lg sm:text-xl mb-8"
             style={{ color: "var(--text-secondary)" }}
           >
             Sorry, we couldn't find that item on our menu. Please browse our
@@ -72,7 +72,7 @@ function MenuItemPage({ menuItemId }: MenuItemPageProps): JSX.Element {
 
   return (
     <div className="warm-gradient min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         {showNotification && (
           <Notification
             message={`${quantity > 1 ? `${quantity}x ` : ""}${menuItem.name} added to your order!`}
@@ -83,24 +83,20 @@ function MenuItemPage({ menuItemId }: MenuItemPageProps): JSX.Element {
           />
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* Image Section */}
-          <div className="space-y-6">
-            <div
-              className="warm-card-gradient rounded-xl p-4 shadow-lg"
-              style={{ border: "1px solid var(--border-warm)" }}
-            >
-              <Img
-                src={menuItem.image}
-                alt={menuItem.name}
-                className="w-full rounded-lg shadow-lg"
-              />
-            </div>
+        {/* Mobile-first stacked layout */}
+        <div className="space-y-6 lg:space-y-8">
+          {/* Image Section - Full width on mobile */}
+          <div className="relative">
+            <Img
+              src={menuItem.image}
+              alt={menuItem.name}
+              className="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-xl shadow-lg"
+            />
 
-            {/* Category Badge */}
-            <div className="flex justify-center">
+            {/* Category badge - positioned over image */}
+            <div className="absolute top-4 left-4">
               <span
-                className="px-6 py-3 rounded-full font-bold text-lg text-white"
+                className="px-4 py-2 rounded-full font-bold text-sm sm:text-base text-white shadow-lg"
                 style={{ backgroundColor: "var(--warm-orange)" }}
               >
                 {getCategoryDisplayName(menuItem.category)}
@@ -108,133 +104,147 @@ function MenuItemPage({ menuItemId }: MenuItemPageProps): JSX.Element {
             </div>
           </div>
 
-          {/* Details Section */}
-          <div className="space-y-8">
-            <div>
+          {/* Item Details */}
+          <div className="space-y-6">
+            {/* Title and Price */}
+            <div className="text-center sm:text-left">
               <h1
-                className="text-5xl font-bold mb-6"
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4"
                 style={{ color: "var(--warm-brown)" }}
               >
                 {menuItem.name}
               </h1>
               <p
-                className="text-4xl font-bold mb-8"
+                className="text-3xl sm:text-4xl font-bold"
                 style={{ color: "var(--warm-orange)" }}
               >
                 ${menuItem.price.toFixed(2)}
               </p>
             </div>
 
+            {/* Description */}
             <div
-              className="warm-card-gradient p-8 rounded-xl shadow-lg"
+              className="warm-card-gradient p-6 sm:p-8 rounded-xl shadow-lg"
               style={{ border: "1px solid var(--border-warm)" }}
             >
               <h2
-                className="text-2xl font-semibold mb-4"
+                className="text-xl sm:text-2xl font-semibold mb-4"
                 style={{ color: "var(--warm-brown)" }}
               >
                 Description
               </h2>
               <p
-                className="text-lg leading-relaxed"
+                className="text-base sm:text-lg leading-relaxed"
                 style={{ color: "var(--text-secondary)" }}
               >
                 {menuItem.description}
               </p>
             </div>
 
-            {/* Quantity and Add to Order */}
+            {/* Quantity Selection & Add to Order */}
             <div
-              className="warm-card-gradient p-8 rounded-xl shadow-lg space-y-6"
+              className="warm-card-gradient p-6 sm:p-8 rounded-xl shadow-lg space-y-6"
               style={{ border: "1px solid var(--border-warm)" }}
             >
               <h3
-                className="text-xl font-semibold"
+                className="text-lg sm:text-xl font-semibold text-center sm:text-left"
                 style={{ color: "var(--warm-brown)" }}
               >
-                Quantity
+                How many would you like?
               </h3>
 
-              <div className="flex items-center space-x-6">
-                <div
-                  className="flex items-center rounded-lg overflow-hidden"
-                  style={{
-                    backgroundColor: "var(--warm-white)",
-                    border: "2px solid var(--border-warm)",
-                  }}
-                >
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={quantity <= 1}
-                    className="px-6 py-4 font-bold text-xl transition-colors disabled:opacity-50"
-                    style={{
-                      color: "var(--text-secondary)",
-                      backgroundColor: "transparent",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!e.currentTarget.disabled) {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--warm-cream)";
-                        e.currentTarget.style.color = "var(--warm-brown)";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.color = "var(--text-secondary)";
-                    }}
-                  >
-                    -
-                  </button>
+              {/* Quantity controls - centered on mobile */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                <div className="flex items-center justify-center sm:justify-start">
                   <span
-                    className="px-8 py-4 font-bold text-2xl"
-                    style={{ color: "var(--text-primary)" }}
+                    className="text-base font-medium mr-4"
+                    style={{ color: "var(--text-secondary)" }}
                   >
-                    {quantity}
+                    Quantity:
                   </span>
-                  <button
-                    onClick={() => setQuantity(Math.min(10, quantity + 1))}
-                    disabled={quantity >= 10}
-                    className="px-6 py-4 font-bold text-xl transition-colors disabled:opacity-50"
+                  <div
+                    className="flex items-center rounded-lg overflow-hidden"
                     style={{
-                      color: "var(--text-secondary)",
-                      backgroundColor: "transparent",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!e.currentTarget.disabled) {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--warm-cream)";
-                        e.currentTarget.style.color = "var(--warm-brown)";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.color = "var(--text-secondary)";
+                      backgroundColor: "var(--warm-white)",
+                      border: "2px solid var(--border-warm)",
                     }}
                   >
-                    +
-                  </button>
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={quantity <= 1}
+                      className="px-5 py-4 font-bold text-xl transition-colors disabled:opacity-50"
+                      style={{
+                        color: "var(--text-secondary)",
+                        backgroundColor: "transparent",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!e.currentTarget.disabled) {
+                          e.currentTarget.style.backgroundColor =
+                            "var(--warm-cream)";
+                          e.currentTarget.style.color = "var(--warm-brown)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "var(--text-secondary)";
+                      }}
+                    >
+                      -
+                    </button>
+                    <span
+                      className="px-8 py-4 font-bold text-2xl min-w-[80px] text-center"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() => setQuantity(Math.min(10, quantity + 1))}
+                      disabled={quantity >= 10}
+                      className="px-5 py-4 font-bold text-xl transition-colors disabled:opacity-50"
+                      style={{
+                        color: "var(--text-secondary)",
+                        backgroundColor: "transparent",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!e.currentTarget.disabled) {
+                          e.currentTarget.style.backgroundColor =
+                            "var(--warm-cream)";
+                          e.currentTarget.style.color = "var(--warm-brown)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "var(--text-secondary)";
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
 
-                <div
-                  className="text-xl"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  Total:{" "}
-                  <span
-                    className="font-bold text-2xl"
+                {/* Total price - prominent display */}
+                <div className="text-center sm:text-right">
+                  <div
+                    className="text-sm font-medium mb-1"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    Total:
+                  </div>
+                  <div
+                    className="font-bold text-2xl sm:text-3xl"
                     style={{ color: "var(--warm-orange)" }}
                   >
                     ${(menuItem.price * quantity).toFixed(2)}
-                  </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="space-y-4">
+            {/* Action Buttons - Stacked for better mobile UX */}
+            <div className="space-y-3 sm:space-y-4">
               <button
                 onClick={handleAddToOrder}
-                className="w-full btn-warm-primary px-10 py-5 rounded-lg transition-all duration-300 font-bold text-xl shadow-lg transform hover:scale-105"
+                className="w-full btn-warm-primary px-8 py-4 sm:py-5 rounded-lg transition-all duration-300 font-bold text-lg sm:text-xl shadow-lg transform hover:scale-105"
               >
                 Add to Order
               </button>
@@ -246,7 +256,7 @@ function MenuItemPage({ menuItemId }: MenuItemPageProps): JSX.Element {
                   window.history.pushState({}, "", "/");
                   window.dispatchEvent(new PopStateEvent("popstate"));
                 }}
-                className="w-full block text-center px-10 py-4 rounded-lg transition-colors font-medium text-lg border-2"
+                className="w-full block text-center px-8 py-4 rounded-lg transition-colors font-medium text-base sm:text-lg border-2"
                 style={{
                   backgroundColor: "transparent",
                   borderColor: "var(--border-warm)",
@@ -267,40 +277,45 @@ function MenuItemPage({ menuItemId }: MenuItemPageProps): JSX.Element {
 
             {/* Additional Info */}
             <div
-              className="warm-card-gradient p-6 rounded-lg shadow-lg"
+              className="warm-card-gradient p-4 sm:p-6 rounded-lg shadow-lg"
               style={{ border: "1px solid var(--border-warm)" }}
             >
-              <p
-                className="text-center text-lg"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                <span
-                  className="font-semibold"
-                  style={{ color: "var(--warm-orange)" }}
+              <div className="space-y-2 text-center sm:text-left">
+                <p
+                  className="text-base sm:text-lg"
+                  style={{ color: "var(--text-secondary)" }}
                 >
-                  Kitchen Hours:
-                </span>
-                11:00 AM - 10:00 PM Daily
-              </p>
-              <p
-                className="text-center mt-3 text-lg"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                Have dietary restrictions? Ask your server about modifications.
-              </p>
+                  <span
+                    className="font-semibold"
+                    style={{ color: "var(--warm-orange)" }}
+                  >
+                    Kitchen Hours:
+                  </span>{" "}
+                  11:00 AM - 10:00 PM Daily
+                </p>
+                <p
+                  className="text-sm sm:text-base"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  Have dietary restrictions? Ask your server about
+                  modifications.
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Related Items Section */}
-        <div className="mt-20">
+        {/* Related Items Section - Mobile optimized */}
+        <div className="mt-12 lg:mt-20">
           <h2
-            className="text-3xl font-bold mb-10 text-center"
+            className="text-2xl sm:text-3xl font-bold mb-8 text-center"
             style={{ color: "var(--warm-brown)" }}
           >
             You Might Also Like
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          {/* Single column on mobile, progressive enhancement */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {menuItems
               .filter(
                 (item) =>
@@ -325,17 +340,17 @@ function MenuItemPage({ menuItemId }: MenuItemPageProps): JSX.Element {
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="w-full h-40 object-cover"
+                      className="w-full h-40 sm:h-48 object-cover"
                     />
-                    <div className="p-6">
+                    <div className="p-4 sm:p-6">
                       <h3
-                        className="font-semibold text-lg mb-2"
+                        className="font-semibold text-base sm:text-lg mb-2"
                         style={{ color: "var(--warm-brown)" }}
                       >
                         {item.name}
                       </h3>
                       <p
-                        className="font-bold text-xl"
+                        className="font-bold text-lg sm:text-xl"
                         style={{ color: "var(--warm-orange)" }}
                       >
                         ${item.price.toFixed(2)}

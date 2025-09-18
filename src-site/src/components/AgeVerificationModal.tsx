@@ -819,7 +819,7 @@ export default function AgeVerificationModal({
                   }
                   className={`text-xl font-bold ${showMerchantToken ? "" : "pointer-events-none opacity-50"}`}
                   style={{ color: "var(--warm-orange)" }}
-                  target={showMerchantToken ? "_blank" : undefined}
+                  // target={showMerchantToken ? "_blank" : undefined}
                   rel="noopener noreferrer"
                 >
                   The Iron Bank

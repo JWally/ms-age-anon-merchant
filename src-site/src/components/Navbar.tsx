@@ -230,7 +230,7 @@ const Navbar = () => {
                 <div className="flex items-center justify-between">
                   <span>Your Order</span>
                   <span
-                    className="px-3 py-1 rounded-full text-sm font-bold shadow-lg"
+                    className="px-3 py-1 rounded-full text-lg font-bold shadow-lg"
                     style={{
                       backgroundColor: "var(--warm-orange)",
                       color: "white",
