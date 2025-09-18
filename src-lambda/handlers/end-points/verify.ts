@@ -24,6 +24,7 @@ import { verifyBankKycSignature } from "../../services/kyc-verification";
 import { base64traverse, get64 } from "../../helpers/misc";
 import { get } from "lodash";
 import { server } from "@passwordless-id/webauthn";
+import { getClientIp } from "../../helpers/ip-address";
 
 // ============================================================================
 // POWERTOOLS INITIALIZATION
@@ -61,7 +62,7 @@ export const lambdaHandler = async (
     // STEP 1: EXTRACT AND VALIDATE REQUEST DATA
     // ========================================================================
     const { body, headers } = event;
-    const ipAddress = event.requestContext.identity.sourceIp;
+    const ipAddress = getClientIp(event);
     const origin = event.headers.origin;
     const verificationToken = event.headers["x-verification-token"] || "";
 
