@@ -34,7 +34,7 @@ function HomePage(): JSX.Element {
           Welcome to HornPub
         </h1>
         <p className="text-2xl mb-8" style={{ color: "var(--text-secondary)" }}>
-          Where Awful Puns Meet Great Food and Great Music
+          Where Boring Puns Meet Mediocre Food and Ho-Hum Music
         </p>
         <div
           className="w-32 h-2 mx-auto rounded-full"

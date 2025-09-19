@@ -2,16 +2,16 @@ export const menuItems = [
   // ---- Appetizers (Yummy Appetizers) ----
   {
     id: 1,
-    name: "Bandcamp Platter",
+    name: "The Sampler",
     price: 28.95,
     image: "/bandcamp.png",
     category: "Yummy Appetizers",
     description:
-      "It’s giving sampler flex: nachos, wings, sliders, and rings. Big enough to ghost your dinner plans (feeds 2–3).",
+      "It's giving sampler flex: nachos, wings, sliders, and rings. Big enough to ghost your dinner plans (feeds 2-3).",
   },
   {
     id: 2,
-    name: "Dirty Queso",
+    name: "Queso",
     price: 9.95,
     image: "/nachos.png",
     category: "Yummy Appetizers",
@@ -20,7 +20,7 @@ export const menuItems = [
   },
   {
     id: 3,
-    name: "Big Brass Sliders",
+    name: "Sliders",
     price: 12.95,
     image: "/sliders.png",
     category: "Yummy Appetizers",
@@ -30,7 +30,7 @@ export const menuItems = [
   // ---- Mains ----
   {
     id: 4,
-    name: "Old Trombone",
+    name: "Chili Dog",
     price: 16.95,
     image: "/rusty-trombone.png",
     category: "mains",
@@ -39,7 +39,7 @@ export const menuItems = [
   },
   {
     id: 5,
-    name: "Horn Dog",
+    name: "Hot Dog",
     price: 18.5,
     image: "/raw-dog.png",
     category: "mains",
@@ -57,7 +57,7 @@ export const menuItems = [
   },
   {
     id: 7,
-    name: "Seafood Steamer",
+    name: "Seafood Plate",
     price: 19.95,
     image: "/steamer.png",
     category: "mains",
@@ -105,7 +105,7 @@ export const menuItems = [
   },
   {
     id: 13,
-    name: "Sloppy Margarita",
+    name: "Messy Margarita",
     price: 11.5,
     image: "/margarita.png",
     category: "drinks",

@@ -400,7 +400,6 @@ export default function AgeVerificationModal({
           </h1>
           <button
             onClick={handleExit}
-            disabled={isVerifying || isCreatingToken}
             className="p-2 rounded-lg transition-colors disabled:opacity-50"
             style={{ color: "var(--text-secondary)" }}
           >
@@ -569,8 +568,6 @@ export default function AgeVerificationModal({
                   }
                   className={`text-lg font-bold ${showMerchantToken ? "" : "pointer-events-none opacity-50"}`}
                   style={{ color: "var(--warm-orange)" }}
-                  target={showMerchantToken ? "_blank" : undefined}
-                  rel="noopener noreferrer"
                 >
                   The Iron Bank
                 </a>
@@ -598,7 +595,6 @@ export default function AgeVerificationModal({
                 onChange={handleSignedTokenChange}
                 placeholder="Paste signed verification token..."
                 rows={3}
-                disabled={isVerifying || !showMerchantToken}
                 className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors mb-4 font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed bg-gray-50"
                 style={{
                   color: "var(--text-primary)",
@@ -619,9 +615,6 @@ export default function AgeVerificationModal({
 
               <button
                 onClick={handleVerifySignedToken}
-                disabled={
-                  isVerifying || !signedKycToken.trim() || !showMerchantToken
-                }
                 className="w-full px-4 py-3 rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 style={{
                   backgroundColor: "var(--warm-orange)",
@@ -819,7 +812,6 @@ export default function AgeVerificationModal({
                   }
                   className={`text-xl font-bold ${showMerchantToken ? "" : "pointer-events-none opacity-50"}`}
                   style={{ color: "var(--warm-orange)" }}
-                  // target={showMerchantToken ? "_blank" : undefined}
                   rel="noopener noreferrer"
                 >
                   The Iron Bank
@@ -850,7 +842,6 @@ export default function AgeVerificationModal({
                 onChange={handleSignedTokenChange}
                 placeholder="Paste signed verification token here..."
                 rows={4}
-                disabled={isVerifying || !showMerchantToken}
                 className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors mb-4 font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed bg-white"
                 style={{
                   color: "var(--text-primary)",
@@ -871,9 +862,6 @@ export default function AgeVerificationModal({
 
               <button
                 onClick={handleVerifySignedToken}
-                disabled={
-                  isVerifying || !signedKycToken.trim() || !showMerchantToken
-                }
                 className="w-full px-6 py-3 rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                 style={{
                   backgroundColor: "var(--warm-orange)",
@@ -892,7 +880,6 @@ export default function AgeVerificationModal({
           <div className="flex flex-col gap-4">
             <button
               onClick={handleExit}
-              disabled={isVerifying || isCreatingToken}
               className="w-full px-6 py-3 rounded-lg transition-colors font-medium border disabled:opacity-50"
               style={{
                 backgroundColor: "transparent",
