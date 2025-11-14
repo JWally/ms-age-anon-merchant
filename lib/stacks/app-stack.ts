@@ -8,7 +8,7 @@ import { Construct } from "constructs";
 import { LambdaConstruct } from "../constructs/lambda";
 import { ApiGatewayConstruct } from "../constructs/api";
 import { DomainConstruct } from "../constructs/domain";
-import { WafConstruct } from "../constructs/waf";
+// import { WafConstruct } from "../constructs/waf";
 import { WARMUP_EVENT } from "../../src-lambda/helpers/constants";
 import { StaticSiteConstruct } from "../constructs/static-site";
 import { SecretConstruct } from "../constructs/secrets";
@@ -55,10 +55,10 @@ export class TheStack extends cdk.Stack {
     );
 
     // Add WAF
-    new WafConstruct(this, "Waf", {
-      environment,
-      apiGateway: apiGateway.api,
-    });
+    // new WafConstruct(this, "Waf", {
+    //   environment,
+    //   apiGateway: apiGateway.api,
+    // });
 
     // Create custom domain and map it to API Gateway
     new DomainConstruct(this, "Domain", {
