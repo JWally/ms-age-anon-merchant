@@ -96,3 +96,4 @@ body {
 .float-note { animation: none !important; }
 .brass-shine { background: none !important; animation: none !important; }
 .gentle-pulse { animation: none !important; }
+.demo-notice{background:#382416;color:#fff3df;text-align:center;padding:9px 16px;font-size:13px;line-height:1.6}.demo-notice a,.demo-notice button{text-decoration:underline;color:inherit}

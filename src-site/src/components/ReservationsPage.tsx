@@ -26,10 +26,7 @@ function ReservationsPage(): JSX.Element {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(
-      "Reservation request submitted! We'll contact you shortly to confirm.",
-    );
-    console.log("Reservation data:", formData);
+    alert("Demo complete. No reservation was made and no details were sent.");
   };
 
   return (

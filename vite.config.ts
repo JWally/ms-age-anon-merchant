@@ -5,7 +5,8 @@ export default defineConfig({
   plugins: [react()],
   root: "./src-site",
   build: {
-    outDir: "../dist",
+    emptyOutDir: true,
+    outDir: "../build/private",
     minify: "terser", // optional, for JS
     // cssMinify is automatic, no need to set
   },

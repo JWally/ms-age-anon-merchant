@@ -89,7 +89,7 @@ function HomePage(): JSX.Element {
                       className="text-3xl font-bold"
                       style={{ color: "var(--warm-orange)" }}
                     >
-                      ${item.price}
+                      ${item.price.toFixed(2)}
                     </span>
                     <Link
                       to={`/menu/${item.id}`}

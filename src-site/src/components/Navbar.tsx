@@ -16,7 +16,7 @@ const Navbar = () => {
   };
 
   return (
-    <>
+    <div className="relative z-50">
       <nav
         className="warm-gradient shadow-lg relative z-50 border-b-2"
         style={{ borderColor: "var(--warm-orange)" }}
@@ -150,7 +150,7 @@ const Navbar = () => {
 
       {/* Mobile Navigation Menu */}
       <div
-        className={`fixed top-16 left-0 right-0 z-40 md:hidden transition-all duration-500 ease-out ${
+        className={`absolute top-full left-0 right-0 z-40 md:hidden transition-all duration-500 ease-out ${
           isMenuOpen
             ? "opacity-100 translate-y-0"
             : "opacity-0 -translate-y-4 pointer-events-none"
@@ -244,7 +244,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

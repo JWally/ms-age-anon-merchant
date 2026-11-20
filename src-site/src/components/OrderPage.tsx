@@ -10,9 +10,9 @@ function OrderPage(): JSX.Element {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      alert("ORDER SENT!");
       emptyCart();
-      sessionStorage.removeItem("session-id");
+      window.history.pushState({}, "", "/order-confirmation");
+      window.dispatchEvent(new PopStateEvent("popstate"));
     } catch (err) {
       console.error(err);
     } finally {
