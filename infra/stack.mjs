@@ -51,6 +51,7 @@ const CONTENT_SECURITY_POLICY = [
   "frame-src https://fortress.wolcott.cc https://collect.edge.wolcott.cc",
   "worker-src 'self' blob: https://fortress.wolcott.cc",
   "font-src 'self'",
+  "manifest-src 'self'",
   "object-src 'none'",
   "base-uri 'none'",
   "form-action 'self'",
