@@ -5,7 +5,7 @@
     "build": "vite build && node build.mjs",
     "test": "node --test test/*.test.mjs",
     "synth": "npm run build && cdk synth --quiet",
-    "deploy": "npm test && npm run build && cdk deploy --require-approval never"
+    "deploy": "npm run build && npm test && cdk deploy --require-approval never"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "3.1167.0",
