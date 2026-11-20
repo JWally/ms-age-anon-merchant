@@ -7,6 +7,7 @@ import {
 import { deflateRawSync, inflateRawSync } from "node:zlib";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { listMenu, getMenuItem } from "./catalog.mjs";
 import {
   SecretsManagerClient,
   GetSecretValueCommand,
@@ -82,12 +83,28 @@ function read(event, name, secret, type, now) {
   }
 }
 function destination(value) {
-  return typeof value === "string" &&
-    /^\/(?:menu\/\d+|order|cart|order-confirmation|order-summary|reservations|events)?$/.test(
-      value,
+  if (
+    typeof value !== "string" ||
+    value.length > 500 ||
+    !value.startsWith("/") ||
+    value.startsWith("//") ||
+    /[\\\r\n]/.test(value)
+  )
+    return "/";
+  const url = new URL(value, ORIGIN);
+  if (
+    url.origin !== ORIGIN ||
+    !/^\/(?:menu(?:\/\d+)?|order|cart|order-confirmation|order-summary|reservations|events)?$/.test(
+      url.pathname,
     )
-    ? value
-    : "/";
+  )
+    return "/";
+  if (url.search && url.pathname !== "/menu") return "/";
+  const allowed = new URLSearchParams();
+  for (const key of ["category", "q", "sort", "page"])
+    if (url.searchParams.has(key))
+      allowed.set(key, url.searchParams.get(key).slice(0, 100));
+  return url.pathname + (allowed.size ? "?" + allowed.toString() : "");
 }
 function html(body) {
   return {
@@ -283,6 +300,7 @@ export function createHandler({
       return reply(405, { error: "method_not_allowed" });
     if (path === "/gate.css" || path === "/gate.js")
       return asset("public", path, method);
+    if (path === "/brand/pub-spread.webp") return asset("public", path, method);
     if (path === "/robots.txt")
       return {
         statusCode: 200,
@@ -292,18 +310,32 @@ export function createHandler({
     if (path === "/verify") return asset("public", "/index.html", method);
     const session = read(event, SESSION, secret, "session", current);
     if (!session) {
-      if (path === "/api/session" || path?.includes("."))
+      if (path?.startsWith("/api/") || path?.includes("."))
         return reply(401, { error: "verification_required" });
       return {
         statusCode: 302,
         headers: {
           ...headers,
-          location: "/verify?next=" + encodeURIComponent(destination(path)),
+          location:
+            "/verify?next=" +
+            encodeURIComponent(
+              destination(
+                path + (event.rawQueryString ? "?" + event.rawQueryString : ""),
+              ),
+            ),
         },
         body: "",
       };
     }
     if (path === "/api/session") return reply(200, { expiresAt: session.exp });
+    if (path === "/api/menu") {
+      const data = listMenu(new URLSearchParams(event.rawQueryString || ""));
+      return reply(data.error ? 400 : 200, data);
+    }
+    if (/^\/api\/menu\/\d+$/.test(path)) {
+      const item = getMenuItem(Number(path.split("/").pop()));
+      return reply(item ? 200 : 404, item || { error: "item_not_found" });
+    }
     if (path === "/verification")
       return html(
         `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Your verification · HornPub</title><link rel="stylesheet" href="/gate.css"><main class="card receipt"><a class="brand" href="/">Horn<span>Pub</span></a><h1>You’re in.</h1><p>This is the verification information HornPub received.</p><details><summary>View verification details</summary><pre>${escape(JSON.stringify(session.receipt, null, 2))}</pre></details><a class="button" href="/">Back to the pub</a></main></html>`,

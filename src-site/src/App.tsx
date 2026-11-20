@@ -1,6 +1,7 @@
 // src/App.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import HomePage from "./components/HomePage";
 import OrderPage from "./components/OrderPage";
 import MenuItemPage from "./components/MenuItemPage";
@@ -11,12 +12,13 @@ import { CartProvider } from "./context/CartContext";
 
 const useRouteComponent = (path: string) =>
   useMemo(() => {
-    if (path.startsWith("/menu/")) {
-      const id = Number(path.split("/")[2]);
+    const pathname = path.split("?")[0];
+    if (pathname.startsWith("/menu/")) {
+      const id = Number(pathname.split("/")[2]);
       return () => <MenuItemPage menuItemId={id} />;
     }
 
-    switch (path) {
+    switch (pathname) {
       case "/order":
       case "/cart":
         return OrderPage;
@@ -33,7 +35,9 @@ const useRouteComponent = (path: string) =>
   }, [path]);
 
 const App: React.FC = () => {
-  const [path, setPath] = useState(() => window.location.pathname);
+  const [path, setPath] = useState(
+    () => window.location.pathname + window.location.search,
+  );
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     let active = true;
@@ -43,7 +47,10 @@ const App: React.FC = () => {
         if (!active) return;
         if (!response.ok)
           return window.location.replace(
-            "/verify?next=" + encodeURIComponent(window.location.pathname),
+            "/verify?next=" +
+              encodeURIComponent(
+                window.location.pathname + window.location.search,
+              ),
           );
         const { expiresAt } = await response.json();
         clearTimeout(timer);
@@ -68,8 +75,14 @@ const App: React.FC = () => {
    */
   useEffect(() => {
     const handlePopState = () => {
-      setPath(window.location.pathname);
+      setPath(window.location.pathname + window.location.search);
       window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+      if (window.location.pathname === "/menu")
+        requestAnimationFrame(() =>
+          document
+            .querySelector("#menu")
+            ?.scrollIntoView({ behavior: "instant" as ScrollBehavior }),
+        );
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -89,6 +102,7 @@ const App: React.FC = () => {
       </div>
       <Navbar />
       <CurrentPage />
+      <Footer />
     </CartProvider>
   );
 };
