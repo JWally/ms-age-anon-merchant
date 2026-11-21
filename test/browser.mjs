@@ -47,7 +47,11 @@ try {
     await page.locator("#entry button").waitFor();
     assert.equal(
       (await page.locator("h1").innerText()).replace(/\s+/g, " ").trim(),
-      "COME HUNGRY. LEAVE HAPPY.",
+      "COME HUNGRY. LEAVE STUFFED",
+    );
+    assert.equal(
+      await page.locator(".scene-copy > p:last-child").innerText(),
+      "Stacked burgers. Cold beer. Awful Puns.",
     );
     assert.equal(
       await page.evaluate(
