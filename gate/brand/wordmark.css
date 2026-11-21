@@ -1,0 +1,29 @@
+@font-face {
+  font-family: "HornPub Lettering";
+  src: url("./hornpub-lettering.woff2") format("woff2");
+  font-weight: 820;
+  font-display: swap;
+}
+.pub-logo {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.23em;
+  color: #482111;
+  font: 820 clamp(32px, 4vw, 46px) / 1 "HornPub Lettering", Georgia, serif;
+  letter-spacing: 0.035em;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.pub-logo .trumpet {
+  flex: none;
+  width: 1.4em;
+  height: 1.4em;
+  object-fit: contain;
+}
+.pub-logo small {
+  display: block;
+  margin: 0.48em 0 0 0.15em;
+  font: 700 max(8px, 0.21em) / 1.1 Poppins, Arial, sans-serif;
+  letter-spacing: 0.19em;
+}

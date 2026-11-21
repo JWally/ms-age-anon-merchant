@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" />
+  <title>HornPub social artwork</title>
+  <link rel="stylesheet" href="../gate/brand/wordmark.css" />
+  <style>
+    @font-face {
+      font-family: Poppins;
+      font-weight: 900;
+      src: url("../gate/brand/poppins-900.woff2");
+    }
+    @font-face {
+      font-family: Poppins;
+      font-weight: 600;
+      src: url("../gate/brand/poppins-600.woff2");
+    }
+    @font-face {
+      font-family: Poppins;
+      font-weight: 700;
+      src: url("../gate/brand/poppins-700.woff2");
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      width: 1200px;
+      height: 627px;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+      background: #ff540e;
+      color: #421600;
+      font-family: Poppins, Arial, sans-serif;
+    }
+    .photo {
+      position: absolute;
+      width: 700px;
+      height: 100%;
+      right: 0;
+      object-fit: cover;
+      object-position: 55% center;
+    }
+    .panel {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 625px;
+      background: #fff3de;
+      clip-path: polygon(0 0, 100% 0, 89% 100%, 0 100%);
+    }
+    .panel-edge {
+      background: #ff540e;
+      width: 640px;
+    }
+    .copy {
+      position: absolute;
+      top: 44px;
+      left: 48px;
+      width: 507px;
+    }
+    h1 {
+      font-size: 65px;
+      line-height: 1.02;
+      letter-spacing: -4px;
+      margin: 75px 0 24px;
+      font-weight: 900;
+    }
+    h1 em {
+      color: #bd3a00;
+      font-style: normal;
+    }
+    p {
+      width: 375px;
+      margin: 0;
+      font-weight: 600;
+      font-size: 22px;
+      line-height: 1.4;
+    }
+    footer {
+      position: absolute;
+      bottom: 42px;
+      left: 48px;
+      width: 450px;
+      border-top: 2px solid #e4b998;
+      padding-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 15px;
+      font-weight: 600;
+    }
+  </style>
+  <img class="photo" src="../gate/brand/pub-spread.webp" alt="" />
+  <div class="panel panel-edge"></div>
+  <div class="panel"></div>
+  <div class="copy">
+    <div class="pub-logo">
+      <img class="trumpet" src="../gate/brand/hornpub-trumpet.png" alt="" /><span
+        >HornPub<small>GRILL · BAR · GOOD TIMES</small></span
+      >
+    </div>
+    <h1>Come hungry.<br /><em>Leave happy.</em></h1>
+    <p>Stacked burgers, saucy wings<br />and live brass.</p>
+  </div>
+  <footer><span>hornpub.click</span><span>A Fortress demo</span></footer>
+</html>

@@ -1,183 +1,264 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "./Link";
-import { menuItems } from "../utils/menuItems";
-import Img from "./Img";
-import { JSX } from "react";
-
-function HomePage(): JSX.Element {
-  // Group menu items by category
-  const categorizedMenu = menuItems.reduce(
-    (acc, item) => {
-      if (!acc[item.category]) {
-        acc[item.category] = [];
-      }
-      acc[item.category].push(item);
-      return acc;
-    },
-    {} as Record<string, typeof menuItems>,
+import MenuCard from "./MenuCard";
+import { useCatalog, MenuPage, navigate } from "../utils/catalog";
+export default function HomePage() {
+  const query = window.location.search;
+  const { data, error, loading } = useCatalog<MenuPage>("/api/menu" + query);
+  const params = new URLSearchParams(query);
+  const [search, setSearch] = useState(params.get("q") || "");
+  useEffect(
+    () => setSearch(new URLSearchParams(query).get("q") || ""),
+    [query],
   );
-
-  const categoryTitles = {
-    appetizers: "Appetizers",
-    mains: "Main Courses",
-    drinks: "Beverages",
-  };
-
+  function filter(key: string, value: string) {
+    const p = new URLSearchParams(query);
+    p.delete("page");
+    if (value && value !== "all") p.set(key, value);
+    else p.delete(key);
+    return "/menu" + (p.size ? "?" + p.toString() : "");
+  }
+  const selected = data?.categories.find((x) => x.id === data.category);
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 warm-gradient min-h-screen">
-      {/* Hero Section */}
-      <div className="text-center mb-16">
-        <h1
-          className="text-6xl font-bold mb-6"
-          style={{ color: "var(--warm-brown)" }}
-        >
-          Welcome to HornPub
-        </h1>
-        <p className="text-2xl mb-8" style={{ color: "var(--text-secondary)" }}>
-          Where Boring Puns Meet Mediocre Food and Ho-Hum Music
+    <main>
+      <section className="pub-hero page-width" aria-label="Welcome to HornPub">
+        <img
+          className="hero-photo"
+          src="/menu/pub-spread.webp"
+          alt="Burgers, saucy wings, barbecue ribs and cold beer at HornPub"
+          fetchPriority="high"
+        />
+        <div className="hero-copy">
+          <p className="kicker">BIG FLAVOR. GOOD TIMES.</p>
+          <h1>
+            Bring your
+            <br />
+            <em>appetite.</em>
+          </h1>
+          <p>Wings worth sharing. Burgers worth bragging about.</p>
+          <a href="#menu" className="pub-button light">
+            Explore the menu <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+      <div className="hero-bar page-width">
+        <p>
+          Your favorites. A few new obsessions. <strong>All right here.</strong>
         </p>
-        <div
-          className="w-32 h-2 mx-auto rounded-full"
-          style={{
-            background:
-              "linear-gradient(90deg, var(--warm-orange), var(--warm-yellow))",
-          }}
-        ></div>
+        <Link to="/menu?category=wings">
+          Let’s talk wings <span aria-hidden="true">→</span>
+        </Link>
       </div>
-
-      {/* Menu by Category */}
-      {Object.entries(categorizedMenu).map(([category, items]) => (
-        <div key={category} className="mb-16">
-          <h2
-            className="text-4xl font-bold mb-8 text-center"
-            style={{ color: "var(--warm-brown-light)" }}
-          >
-            {categoryTitles[category as keyof typeof categoryTitles] ||
-              category}
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="warm-card-gradient rounded-xl shadow-lg overflow-hidden transition-all duration-300 flex flex-col hover:shadow-xl transform hover:scale-105"
-                style={{ border: "1px solid var(--border-warm)" }}
+      {window.location.pathname === "/" && (
+        <section
+          className="featured page-width"
+          aria-labelledby="featured-heading"
+        >
+          <h2 id="featured-heading">Big on flavor.</h2>
+          <div className="feature-grid">
+            {[
+              {
+                category: "wings",
+                image: "buffalo-wings",
+                label: "Sauce it up",
+                sub: "Wings & tenders",
+              },
+              {
+                category: "burgers",
+                image: "pub-burger",
+                label: "Stacked with the good stuff",
+                sub: "Burgers & sliders",
+              },
+              {
+                category: "starters",
+                image: "loaded-fries",
+                label: "Start something good",
+                sub: "Shareable starters",
+              },
+              {
+                category: "desserts",
+                image: "cookie-skillet",
+                label: "Save a little room",
+                sub: "Desserts & sweet treats",
+              },
+            ].map((x) => (
+              <Link
+                key={x.category}
+                to={"/menu?category=" + x.category}
+                className="feature-card"
               >
-                <Link to={`/menu/${item.id}`} className="block overflow-hidden">
-                  <Img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-48 object-cover transition-transform duration-300 hover:scale-110"
+                <div className="feature-photo">
+                  <img
+                    src={"/menu/" + x.image + ".webp"}
+                    alt={x.sub}
+                    loading="lazy"
                   />
-                </Link>
-
-                <div className="p-6 flex-grow flex flex-col">
-                  <h3
-                    className="text-xl font-semibold mb-3"
-                    style={{ color: "var(--warm-brown)" }}
-                  >
-                    {item.name}
-                  </h3>
-                  <p
-                    className="text-sm mb-4 flex-grow leading-relaxed"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    {item.description}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span
-                      className="text-3xl font-bold"
-                      style={{ color: "var(--warm-orange)" }}
-                    >
-                      ${item.price}
-                    </span>
-                    <Link
-                      to={`/menu/${item.id}`}
-                      className="btn-warm-primary px-6 py-3 rounded-lg transition-all duration-300 font-semibold shadow-lg transform hover:scale-105"
-                    >
-                      Order Now
-                    </Link>
-                  </div>
+                  <span>{x.label}</span>
                 </div>
-              </div>
+                <div className="feature-caption">
+                  {x.sub}
+                  <span aria-hidden="true">→</span>
+                </div>
+              </Link>
             ))}
           </div>
-        </div>
-      ))}
-
-      {/* About Section */}
-      <div
-        className="warm-card-gradient rounded-xl p-10 mt-16 shadow-lg"
-        style={{ border: "1px solid var(--border-warm)" }}
+        </section>
+      )}
+      <section
+        id="menu"
+        className="catalog page-width"
+        aria-labelledby="menu-heading"
       >
-        <div className="text-center">
-          <h2
-            className="text-4xl font-bold mb-6"
-            style={{ color: "var(--warm-brown)" }}
-          >
-            About HornPub
-          </h2>
-          <p
-            className="text-lg leading-relaxed max-w-4xl mx-auto mb-8"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            Located in the heart of the city, HornPub combines the warm
-            atmosphere of a traditional pub with the soulful sounds of brass
-            band music. Our menu features comfort food classics with a musical
-            twist, perfect for enjoying with friends while listening to live
-            performances every weekend.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
-            <div
-              className="text-center p-6 rounded-lg"
-              style={{ backgroundColor: "var(--warm-cream)" }}
-            >
-              <div
-                className="text-4xl font-bold mb-3"
-                style={{ color: "var(--warm-orange)" }}
-              >
-                Live Music
-              </div>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                Professional brass bands every weekend
-              </p>
-            </div>
-
-            <div
-              className="text-center p-6 rounded-lg"
-              style={{ backgroundColor: "var(--warm-cream)" }}
-            >
-              <div
-                className="text-4xl font-bold mb-3"
-                style={{ color: "var(--warm-orange)" }}
-              >
-                Craft Brews
-              </div>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                Locally sourced beer and spirits
-              </p>
-            </div>
-
-            <div
-              className="text-center p-6 rounded-lg"
-              style={{ backgroundColor: "var(--warm-cream)" }}
-            >
-              <div
-                className="text-4xl font-bold mb-3"
-                style={{ color: "var(--warm-orange)" }}
-              >
-                Fresh Food
-              </div>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                Made-to-order comfort food classics
-              </p>
-            </div>
+        <div className="catalog-heading">
+          <div>
+            <p className="kicker">COME HUNGRY. STAY AWHILE.</p>
+            <h2 id="menu-heading">
+              {selected?.name || "Find your next favorite."}
+            </h2>
+            <p>
+              {selected?.intro ||
+                "All your pub favorites, and a few new reasons to come back."}
+            </p>
           </div>
+          <span className="menu-count">
+            {data?.catalogTotal || 120} ways to make a night of it.
+          </span>
         </div>
-      </div>
-    </div>
+        <nav className="category-tabs" aria-label="Menu categories">
+          <Link
+            to={filter("category", "all")}
+            className={!params.get("category") ? "selected" : ""}
+            aria-current={!params.get("category") ? "page" : undefined}
+          >
+            All the good stuff
+          </Link>
+          {data?.categories.map((c) => (
+            <Link
+              key={c.id}
+              to={filter("category", c.id)}
+              className={data.category === c.id ? "selected" : ""}
+              aria-current={data.category === c.id ? "page" : undefined}
+            >
+              {c.name}
+            </Link>
+          ))}
+        </nav>
+        <div className="catalog-tools">
+          <form
+            className="menu-search"
+            role="search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              navigate(filter("q", search));
+            }}
+          >
+            <span aria-hidden="true">⌕</span>
+            <label className="sr-only" htmlFor="menu-search">
+              Search the menu
+            </label>
+            <input
+              id="menu-search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="What sounds good?"
+            />
+            <button type="submit">Search</button>
+          </form>
+          <label className="menu-sort">
+            Sort by{" "}
+            <select
+              value={params.get("sort") || "featured"}
+              onChange={(e) => navigate(filter("sort", e.target.value))}
+            >
+              <option value="featured">House favorites</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+              <option value="name">Name: A–Z</option>
+            </select>
+          </label>
+        </div>
+        <div className="results-line" role="status">
+          {loading
+            ? "Setting the table…"
+            : error ||
+              `Showing ${data?.total ? (data.page - 1) * data.pageSize + 1 : 0}–${data ? Math.min(data.page * data.pageSize, data.total) : 0} of ${data?.total || 0} items`}
+          {data?.query && (
+            <Link to={filter("q", "")} className="clear-search">
+              Clear “{data.query}” ×
+            </Link>
+          )}
+        </div>
+        {loading ? (
+          <div className="food-grid" aria-hidden="true">
+            {Array.from({ length: 6 }, (_, i) => (
+              <div className="menu-skeleton" key={i} />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="empty-menu">
+            <h3>Let’s try that again.</h3>
+            <p>{error}</p>
+            <Link to="/menu" className="pub-button">
+              Back to the menu
+            </Link>
+          </div>
+        ) : data?.total === 0 ? (
+          <div className="empty-menu">
+            <h3>No bites on that one.</h3>
+            <p>Try another search or browse all our favorites.</p>
+            <Link to="/menu" className="pub-button">
+              See the full menu
+            </Link>
+          </div>
+        ) : (
+          <div className="food-grid">
+            {data?.items.map((item) => (
+              <MenuCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
+        {data && data.pages > 1 && (
+          <nav className="pagination" aria-label="Menu pages">
+            {data.previous ? (
+              <Link to={data.previous} rel="prev" className="page-direction">
+                ← Previous
+              </Link>
+            ) : (
+              <span className="page-direction disabled">← Previous</span>
+            )}
+            <div>
+              {data.pageLinks.map((p) => (
+                <Link
+                  key={p.page}
+                  to={p.url}
+                  aria-label={`Page ${p.page}`}
+                  aria-current={p.page === data.page ? "page" : undefined}
+                  className={p.page === data.page ? "current" : ""}
+                >
+                  {p.page}
+                </Link>
+              ))}
+            </div>
+            {data.next ? (
+              <Link to={data.next} rel="next" className="page-direction">
+                Next →
+              </Link>
+            ) : (
+              <span className="page-direction disabled">Next →</span>
+            )}
+          </nav>
+        )}
+      </section>
+      <section className="pub-callout page-width">
+        <div>
+          <p className="kicker">MAKE YOURSELF AT HOME</p>
+          <h2>Stay for the encore.</h2>
+          <p>The food’s just the opening act. There’s a whole evening here.</p>
+        </div>
+        <Link to="/events" className="pub-button light">
+          See what’s playing <span aria-hidden="true">↗</span>
+        </Link>
+      </section>
+    </main>
   );
 }
-
-export default HomePage;
