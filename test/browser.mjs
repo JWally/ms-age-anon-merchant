@@ -63,6 +63,21 @@ try {
       path: `artifacts/catalog/gate-${name}.png`,
       fullPage: true,
     });
+    await page
+      .getByText("Click here if you’re an AGENT", { exact: false })
+      .click();
+    const guide = page.getByRole("link", {
+      name: "Open the Fortress agent instructions",
+    });
+    assert.equal(
+      await guide.getAttribute("href"),
+      "https://captcha.wolcott.cc/agent/#document-of-intent",
+    );
+    assert.ok(
+      await page
+        .getByRole("button", { name: /Open the passport check/ })
+        .isVisible(),
+    );
     const start = await context.request.post(origin + "/api/start", {
       data: { next: "/menu" },
     });

@@ -9,8 +9,16 @@ export default function Navbar() {
     <header className="pub-header">
       <div className="page-width nav-inner">
         <Link to="/" className="pub-logo" aria-label="HornPub home">
-          Horn<span>Pub</span>
-          <small>GRILL · BAR · GOOD TIMES</small>
+          <img
+            className="trumpet"
+            src="/brand/hornpub-trumpet.png"
+            width="64"
+            height="64"
+            alt=""
+          />
+          <span>
+            HornPub<small>GRILL · BAR · GOOD TIMES</small>
+          </span>
         </Link>
         <nav
           className={open ? "pub-nav is-open" : "pub-nav"}

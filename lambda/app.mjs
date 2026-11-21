@@ -303,16 +303,28 @@ export function createHandler({
       return asset("public", path, method);
     if (/^\/brand\/poppins-(400|600|700|800|900)\.woff2$/.test(path))
       return asset("public", path, method);
-    if (path === "/brand/pub-spread.webp") return asset("public", path, method);
+    if (
+      [
+        "/brand/pub-spread.webp",
+        "/brand/hornpub-trumpet.png",
+        "/brand/hornpub-social.jpg",
+      ].includes(path)
+    )
+      return asset("public", path, method);
     if (path === "/robots.txt")
       return {
         statusCode: 200,
         headers: { ...headers, "content-type": "text/plain" },
-        body: "User-agent: *\nDisallow: /\n",
+        body: "User-agent: *\nAllow: /$\nAllow: /brand/\nAllow: /gate.css$\nAllow: /gate.js$\nDisallow: /\n",
       };
-    if (path === "/verify") return asset("public", "/index.html", method);
+    if (path === "/verify") {
+      const entry = await asset("public", "/index.html", method);
+      entry.headers["x-robots-tag"] = "noindex, follow";
+      return entry;
+    }
     const session = read(event, SESSION, secret, "session", current);
     if (!session) {
+      if (path === "/") return asset("public", "/index.html", method);
       if (path?.startsWith("/api/") || path?.includes("."))
         return reply(401, { error: "verification_required" });
       return {
@@ -341,7 +353,7 @@ export function createHandler({
     }
     if (path === "/verification")
       return html(
-        `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Your verification · HornPub</title><link rel="stylesheet" href="/gate.css"><main class="card receipt"><a class="brand" href="/">Horn<span>Pub</span></a><h1>You’re in.</h1><p>This is the verification information HornPub received.</p><details><summary>View verification details</summary><pre>${escape(JSON.stringify(session.receipt, null, 2))}</pre></details><a class="button" href="/">Back to the pub</a></main></html>`,
+        `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Your verification · HornPub</title><link rel="stylesheet" href="/gate.css"><main class="card receipt"><a class="brand" href="/"><img class="trumpet" src="/brand/hornpub-trumpet.png" width="64" height="64" alt="">HornPub</a><h1>You’re in.</h1><p>This is the verification information HornPub received.</p><details><summary>View verification details</summary><pre>${escape(JSON.stringify(session.receipt, null, 2))}</pre></details><a class="button" href="/">Back to the pub</a></main></html>`,
       );
     if (destination(path) === path)
       return asset("private", "/index.html", method);

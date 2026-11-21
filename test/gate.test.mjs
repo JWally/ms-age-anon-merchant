@@ -23,15 +23,9 @@ async function enter(handler, next = "/") {
     start,
   };
 }
-test("no HTML, JS, menu data, images, or receipt without a valid signed session", async () => {
+test("only the public welcome and its brand assets are available before verification", async () => {
   const handler = createHandler({ secret });
-  for (const path of [
-    "/",
-    "/menu/1",
-    "/events",
-    "/reservations",
-    "/verification",
-  ]) {
+  for (const path of ["/menu/1", "/events", "/reservations", "/verification"]) {
     const result = await handler(event(path));
     assert.equal(result.statusCode, 302, path);
     assert.match(result.headers.location, /^\/verify\?/);
@@ -45,15 +39,23 @@ test("no HTML, JS, menu data, images, or receipt without a valid signed session"
     "/api/session",
   ])
     assert.equal((await handler(event(path))).statusCode, 401, path);
-  assert.equal(
-    (
-      await handler(
-        event("/", "GET", undefined, ["__Host-hornpub_session=forged.cookie"]),
-      )
-    ).statusCode,
-    302,
-  );
-  assert.equal((await handler(event("/verify"))).statusCode, 200);
+  for (const cookies of [[], ["__Host-hornpub_session=forged.cookie"]]) {
+    const landing = await handler(event("/", "GET", undefined, cookies));
+    assert.equal(landing.statusCode, 200);
+    const markup = Buffer.from(landing.body, "base64").toString("utf8");
+    assert.match(markup, /Click here if you’re a HUMAN/);
+    assert.match(
+      markup,
+      /property="og:image"\s+content="https:\/\/hornpub\.click\/brand\/hornpub-social\.jpg"/,
+    );
+    assert.ok(!markup.includes('id="root"'));
+  }
+  const preview = await handler(event("/brand/hornpub-social.jpg"));
+  assert.equal(preview.statusCode, 200);
+  assert.equal(preview.headers["content-type"], "image/jpeg");
+  const verifyPage = await handler(event("/verify"));
+  assert.equal(verifyPage.statusCode, 200);
+  assert.match(verifyPage.headers["x-robots-tag"], /noindex/);
 });
 test("accepted human check grants private content and expires after 15 minutes", async () => {
   let time = 1800000000000;
@@ -93,7 +95,7 @@ test("accepted human check grants private content and expires after 15 minutes",
   );
   time += 900000;
   assert.equal(
-    (await handler(event("/", "GET", undefined, cookies))).statusCode,
+    (await handler(event("/menu", "GET", undefined, cookies))).statusCode,
     302,
   );
 });
@@ -224,7 +226,7 @@ test("passport admission enforces browse authorization and caps session by both 
   assert.match(receipt.body, /browse/);
   time += 120000;
   assert.equal(
-    (await handler(event("/", "GET", undefined, cookies))).statusCode,
+    (await handler(event("/menu", "GET", undefined, cookies))).statusCode,
     302,
   );
 });

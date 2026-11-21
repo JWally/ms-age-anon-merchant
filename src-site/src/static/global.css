@@ -142,7 +142,9 @@ p {
   position: relative;
 }
 .pub-logo {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.16em;
   text-decoration: none;
   font:
     900 40px/0.95 Poppins,
@@ -154,6 +156,11 @@ p {
   flex-shrink: 0;
   -webkit-text-stroke: 1px var(--warm-brown);
   paint-order: stroke fill;
+}
+.pub-logo .trumpet {
+  width: 1.65em;
+  height: 1.65em;
+  object-fit: contain;
 }
 .pub-logo > span {
   color: var(--brand-orange);
@@ -1512,5 +1519,17 @@ p {
   }
   .cart-layout {
     gap: 28px;
+  }
+}
+
+@media (max-width: 760px) {
+  .pub-logo .trumpet {
+    width: 1.22em;
+    height: 1.22em;
+  }
+}
+@media (max-width: 375px) {
+  .nav-inner .pub-logo {
+    font-size: 21px;
   }
 }

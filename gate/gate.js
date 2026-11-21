@@ -1,5 +1,8 @@
 const form = document.querySelector("#entry");
-const button = form.querySelector("button");
+const buttons = document.querySelectorAll('button[type="submit"]');
+function disableChecks(disabled) {
+  for (const button of buttons) button.disabled = disabled;
+}
 const status = document.querySelector("#status");
 let redirect = "/";
 async function api(path, data) {
@@ -27,7 +30,7 @@ async function api(path, data) {
 }
 if (!window.FortressCaptcha) {
   form.addEventListener("submit", (e) => e.preventDefault());
-  button.disabled = true;
+  disableChecks(true);
   status.textContent = "The check could not load. Please refresh to try again.";
 } else {
   window.FortressCaptcha.attach({
@@ -36,7 +39,7 @@ if (!window.FortressCaptcha) {
     siteKey: "site_test_demo.forceauth",
     title: "Welcome to HornPub",
     getActionId: async () => {
-      button.disabled = true;
+      disableChecks(true);
       status.textContent = "";
       const started = await api("/api/start", {
         next: new URLSearchParams(location.search).get("next") || "/",
@@ -50,7 +53,7 @@ if (!window.FortressCaptcha) {
     },
     onComplete: () => location.assign(redirect),
     onFail: (error) => {
-      button.disabled = false;
+      disableChecks(false);
       status.textContent =
         error.message === "captcha_cancelled"
           ? "No rush. Start the check whenever you’re ready."

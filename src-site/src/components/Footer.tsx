@@ -6,8 +6,16 @@ export default function Footer() {
       <div className="page-width">
         <div className="footer-top">
           <Link to="/" className="pub-logo">
-            Horn<span>Pub</span>
-            <small>YOUR NEW OLD FAVORITE.</small>
+            <img
+              className="trumpet"
+              src="/brand/hornpub-trumpet.png"
+              width="64"
+              height="64"
+              alt=""
+            />
+            <span>
+              HornPub<small>GRILL · BAR · GOOD TIMES</small>
+            </span>
           </Link>
           <p>
             A seat at the bar. Something good on the table.
