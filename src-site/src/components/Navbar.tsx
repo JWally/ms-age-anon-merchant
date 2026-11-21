@@ -20,6 +20,15 @@ export default function Navbar() {
             HornPub<small>GRILL · BAR · GOOD TIMES</small>
           </span>
         </Link>
+        <button
+          className="mobile-toggle"
+          aria-controls="primary-navigation"
+          aria-label="Toggle menu"
+          aria-expanded={open}
+          onClick={() => setOpen((x) => !x)}
+        >
+          {open ? "×" : "☰"}
+        </button>
         <nav
           className={open ? "pub-nav is-open" : "pub-nav"}
           id="primary-navigation"
@@ -42,15 +51,6 @@ export default function Navbar() {
             Your tab <span>{count}</span>
           </Link>
         </nav>
-        <button
-          className="mobile-toggle"
-          aria-controls="primary-navigation"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-          onClick={() => setOpen((x) => !x)}
-        >
-          {open ? "×" : "☰"}
-        </button>
       </div>
     </header>
   );

@@ -121,6 +121,12 @@ try {
     if (name === "phone") {
       await page.screenshot({ path: "artifacts/catalog/sticky-nav-phone.png" });
       await header.getByRole("button", { name: "Toggle menu" }).click();
+      await page.keyboard.press("Tab");
+      assert.ok(
+        await header
+          .getByRole("link", { name: "The menu", exact: true })
+          .evaluate((link) => link === document.activeElement),
+      );
       await tabLink.click();
       assert.equal(new URL(page.url()).pathname, "/cart");
       assert.equal(await tabLink.count(), 0);
