@@ -46,13 +46,19 @@ body {
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
 }
-.gate-header,
 .gate-layout,
 footer {
   width: min(1140px, calc(100% - 64px));
   margin-inline: auto;
 }
 .gate-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  flex-shrink: 0;
+  padding-inline: max(32px, calc((100% - 1140px) / 2));
+  background: white;
+  box-shadow: 0 1px 0 #f2d2b5;
   height: 104px;
   display: flex;
   align-items: center;
@@ -279,13 +285,13 @@ summary {
   }
 }
 @media (max-width: 650px) {
-  .gate-header,
   .gate-layout,
   footer {
     width: calc(100% - 32px);
   }
   .gate-header {
-    height: 88px;
+    padding-inline: 16px;
+    height: 70px;
     gap: 14px;
   }
   .brand {

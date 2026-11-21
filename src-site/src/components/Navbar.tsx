@@ -22,6 +22,7 @@ export default function Navbar() {
         </Link>
         <nav
           className={open ? "pub-nav is-open" : "pub-nav"}
+          id="primary-navigation"
           aria-label="Primary"
         >
           <Link to="/menu" onClick={() => setOpen(false)}>
@@ -33,20 +34,23 @@ export default function Navbar() {
           <Link to="/events" onClick={() => setOpen(false)}>
             Live music
           </Link>
-        </nav>
-        <div className="nav-actions">
-          <Link to="/cart" className="tab-button">
+          <Link
+            to="/cart"
+            className="tab-button"
+            onClick={() => setOpen(false)}
+          >
             Your tab <span>{count}</span>
           </Link>
-          <button
-            className="mobile-toggle"
-            aria-label="Toggle menu"
-            aria-expanded={open}
-            onClick={() => setOpen((x) => !x)}
-          >
-            {open ? "×" : "☰"}
-          </button>
-        </div>
+        </nav>
+        <button
+          className="mobile-toggle"
+          aria-controls="primary-navigation"
+          aria-label="Toggle menu"
+          aria-expanded={open}
+          onClick={() => setOpen((x) => !x)}
+        >
+          {open ? "×" : "☰"}
+        </button>
       </div>
     </header>
   );

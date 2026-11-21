@@ -107,6 +107,24 @@ try {
       path: `artifacts/catalog/menu-${name}.png`,
       fullPage: true,
     });
+    const header = page.locator(".pub-header");
+    const tabLink = header.getByRole("link", { name: /Your tab/ });
+    assert.equal(await tabLink.count(), name === "phone" ? 0 : 1);
+    await page.evaluate(() =>
+      window.scrollTo({ top: 600, behavior: "instant" }),
+    );
+    await page.waitForFunction(
+      () =>
+        window.scrollY > 500 &&
+        document.querySelector(".pub-header").getBoundingClientRect().top === 0,
+    );
+    if (name === "phone") {
+      await page.screenshot({ path: "artifacts/catalog/sticky-nav-phone.png" });
+      await header.getByRole("button", { name: "Toggle menu" }).click();
+      await tabLink.click();
+      assert.equal(new URL(page.url()).pathname, "/cart");
+      assert.equal(await tabLink.count(), 0);
+    }
     if (name === "desktop") {
       const ids = new Set();
       for (let n = 1; n <= 10; n++) {

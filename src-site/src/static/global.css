@@ -38,6 +38,7 @@
 }
 
 :root {
+  --nav-height: 96px;
   --warm-cream: #ffffff;
   --warm-white: #fff3df;
   --warm-brown: #571700;
@@ -59,7 +60,7 @@
 }
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 24px;
+  scroll-padding-top: calc(var(--nav-height) + 12px);
 }
 body {
   margin: 0;
@@ -131,10 +132,14 @@ p {
   padding: 0;
 }
 .pub-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   background: white;
+  box-shadow: 0 1px 0 var(--border-warm);
 }
 .nav-inner {
-  height: 96px;
+  height: var(--nav-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -189,16 +194,13 @@ p {
   border: 2px solid var(--brand-orange);
   border-radius: 999px;
 }
-.pub-nav a:hover {
+.pub-nav a:not(.tab-button):hover {
   background: #fff3df;
   color: var(--warm-brown);
 }
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.tab-button {
+.pub-nav .tab-button {
+  border-color: var(--action-brown);
+  justify-content: center;
   background: var(--action-brown);
   color: var(--paper);
   padding: 13px 19px;
@@ -1058,8 +1060,10 @@ p {
     font-size: 9px;
     padding: 7px 14px;
   }
+  :root {
+    --nav-height: 70px;
+  }
   .nav-inner {
-    height: 82px;
     gap: 16px;
   }
   .pub-logo {
@@ -1069,21 +1073,15 @@ p {
     font-size: 6px;
     letter-spacing: 1.5px;
   }
-  .tab-button {
-    padding: 10px 12px;
-    font-size: 10px;
-    gap: 9px;
-  }
-  .nav-actions {
-    gap: 10px;
-  }
   .mobile-toggle {
     display: block;
   }
   .pub-nav {
     display: none;
     position: absolute;
-    top: 82px;
+    top: 100%;
+    max-height: calc(100dvh - var(--nav-height));
+    overflow-y: auto;
     left: -18px;
     right: -18px;
     padding: 16px 24px;
@@ -1301,11 +1299,6 @@ p {
   .nav-inner {
     gap: 8px;
   }
-  .tab-button {
-    padding: 9px;
-    white-space: nowrap;
-    gap: 6px;
-  }
   .pub-logo {
     font-size: 26px;
   }
@@ -1313,9 +1306,6 @@ p {
     font-size: 12px;
     padding: 13px 18px;
     gap: 18px;
-  }
-  .nav-actions {
-    gap: 6px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
