@@ -11,3 +11,5 @@ Style: original American neighborhood bar-and-grill food photography, dark walnu
 ## Typography
 
 Poppins (400, 600, 700, 800, 900) is self-hosted in `gate/brand/` and shared by the entry page and authenticated site. Downloaded from Google Fonts and converted to WOFF2; licensed under the SIL Open Font License in `Poppins-OFL.txt`. No runtime font requests go to third parties.
+
+The HornPub wordmark pairs an original generated ivory trumpet seal with a self-hosted [Fraunces](https://github.com/undercasetype/Fraunces) subset for the seven letters. The lettering uses weight 820, optical size 48, softness 60, and the wonky alternates. See [Fraunces-OFL.txt](Fraunces-OFL.txt).

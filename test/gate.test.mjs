@@ -46,7 +46,7 @@ test("only the public welcome and its brand assets are available before verifica
     assert.match(markup, /Click here if you’re a HUMAN/);
     assert.match(
       markup,
-      /property="og:image"\s+content="https:\/\/hornpub\.click\/brand\/hornpub-social\.jpg"/,
+      /property="og:image"\s+content="https:\/\/hornpub\.click\/brand\/hornpub-social\.jpg\?v=brass"/,
     );
     assert.ok(!markup.includes('id="root"'));
   }

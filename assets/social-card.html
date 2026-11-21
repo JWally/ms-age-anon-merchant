@@ -2,6 +2,7 @@
 <html lang="en">
   <meta charset="utf-8" />
   <title>HornPub social artwork</title>
+  <link rel="stylesheet" href="../gate/brand/wordmark.css" />
   <style>
     @font-face {
       font-family: Poppins;
@@ -12,6 +13,11 @@
       font-family: Poppins;
       font-weight: 600;
       src: url("../gate/brand/poppins-600.woff2");
+    }
+    @font-face {
+      font-family: Poppins;
+      font-weight: 700;
+      src: url("../gate/brand/poppins-700.woff2");
     }
     * {
       box-sizing: border-box;
@@ -51,29 +57,6 @@
       left: 48px;
       width: 507px;
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      font-size: 45px;
-      letter-spacing: -2px;
-      font-weight: 900;
-    }
-    .brand img {
-      width: 79px;
-      height: 79px;
-      object-fit: contain;
-    }
-    .brand small {
-      display: block;
-      font-size: 12px;
-      letter-spacing: 3px;
-      margin-top: 5px;
-      font-weight: 600;
-    }
-    .brand span {
-      line-height: 1;
-    }
     h1 {
       font-size: 65px;
       line-height: 1.02;
@@ -110,9 +93,9 @@
   <div class="panel panel-edge"></div>
   <div class="panel"></div>
   <div class="copy">
-    <div class="brand">
-      <img src="../gate/brand/hornpub-trumpet.png" alt="" /><span
-        >HORNPUB<small>GRILL · BAR · GOOD TIMES</small></span
+    <div class="pub-logo">
+      <img class="trumpet" src="../gate/brand/hornpub-trumpet.png" alt="" /><span
+        >HornPub<small>GRILL · BAR · GOOD TIMES</small></span
       >
     </div>
     <h1>Come hungry.<br /><em>Leave happy.</em></h1>

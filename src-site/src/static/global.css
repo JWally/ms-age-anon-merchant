@@ -146,41 +146,6 @@ p {
   gap: 18px;
   position: relative;
 }
-.pub-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.16em;
-  text-decoration: none;
-  font:
-    900 40px/0.95 Poppins,
-    Arial,
-    sans-serif;
-  letter-spacing: -2px;
-  text-transform: uppercase;
-  color: var(--brand-orange);
-  flex-shrink: 0;
-  -webkit-text-stroke: 1px var(--warm-brown);
-  paint-order: stroke fill;
-}
-.pub-logo .trumpet {
-  width: 1.65em;
-  height: 1.65em;
-  object-fit: contain;
-}
-.pub-logo > span {
-  color: var(--brand-orange);
-}
-.pub-logo small {
-  display: block;
-  font:
-    700 8px/1.4 Poppins,
-    Arial,
-    sans-serif;
-  letter-spacing: 2px;
-  margin-top: 9px;
-  color: var(--warm-brown);
-  -webkit-text-stroke: 0;
-}
 .pub-nav {
   display: flex;
   gap: 10px;
@@ -1066,13 +1031,6 @@ p {
   .nav-inner {
     gap: 16px;
   }
-  .pub-logo {
-    font-size: 31px;
-  }
-  .pub-logo small {
-    font-size: 6px;
-    letter-spacing: 1.5px;
-  }
   .mobile-toggle {
     display: block;
   }
@@ -1299,9 +1257,6 @@ p {
   .nav-inner {
     gap: 8px;
   }
-  .pub-logo {
-    font-size: 26px;
-  }
   .hero-copy .pub-button {
     font-size: 12px;
     padding: 13px 18px;
@@ -1509,17 +1464,5 @@ p {
   }
   .cart-layout {
     gap: 28px;
-  }
-}
-
-@media (max-width: 760px) {
-  .pub-logo .trumpet {
-    width: 1.22em;
-    height: 1.22em;
-  }
-}
-@media (max-width: 375px) {
-  .nav-inner .pub-logo {
-    font-size: 21px;
   }
 }
