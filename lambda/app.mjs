@@ -30,6 +30,7 @@ const mime = {
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
   ".webp": "image/webp",
+  ".woff2": "font/woff2",
   ".svg": "image/svg+xml",
   ".ico": "image/x-icon",
   ".webmanifest": "application/manifest+json",
@@ -299,6 +300,8 @@ export function createHandler({
     if (!["GET", "HEAD"].includes(method))
       return reply(405, { error: "method_not_allowed" });
     if (path === "/gate.css" || path === "/gate.js")
+      return asset("public", path, method);
+    if (/^\/brand\/poppins-(400|600|700|800|900)\.woff2$/.test(path))
       return asset("public", path, method);
     if (path === "/brand/pub-spread.webp") return asset("public", path, method);
     if (path === "/robots.txt")

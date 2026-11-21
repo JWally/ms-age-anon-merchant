@@ -76,7 +76,7 @@ test("every photo exists, fits a Lambda response, and full catalog is absent fro
   ])
     assert.ok(!js.includes(name), name);
 });
-test("catalog endpoints and photography are authenticated; only promotional hero is public", async () => {
+test("catalog endpoints and photography are authenticated; promotional hero and named fonts are public", async () => {
   let now = 1800000000000;
   const handler = createHandler({
     secret: "test-catalog-session-secret".repeat(3),
@@ -94,6 +94,15 @@ test("catalog endpoints and photography are authenticated; only promotional hero
   for (const p of ["/api/menu", "/api/menu/1", "/menu/pub-burger.webp"])
     assert.equal((await handler(req(p))).statusCode, 401);
   assert.equal((await handler(req("/brand/pub-spread.webp"))).statusCode, 200);
+  for (const weight of [400, 600, 700, 800, 900]) {
+    const font = await handler(req(`/brand/poppins-${weight}.woff2`));
+    assert.equal(font.statusCode, 200);
+    assert.equal(font.headers["content-type"], "font/woff2");
+  }
+  assert.equal(
+    (await handler(req("/brand/poppins-500.woff2"))).statusCode,
+    401,
+  );
   const start = await handler(
     req("/api/start", "POST", { next: "/menu?category=burgers&page=1" }),
   );

@@ -47,13 +47,17 @@ try {
     await page.locator("#entry button").waitFor();
     assert.equal(
       (await page.locator("h1").innerText()).replace(/\s+/g, " ").trim(),
-      "Pull up a chair.",
+      "COME HUNGRY. LEAVE HAPPY.",
     );
     assert.equal(
       await page.evaluate(
         () => document.documentElement.scrollWidth > innerWidth,
       ),
       false,
+    );
+    await page.evaluate(() => document.fonts.ready);
+    assert.ok(
+      await page.evaluate(() => document.fonts.check("900 32px Poppins")),
     );
     await page.screenshot({
       path: `artifacts/catalog/gate-${name}.png`,

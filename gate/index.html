@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
-    <meta name="theme-color" content="#f7f3eb" />
-    <title>Pull up a chair · HornPub</title>
+    <meta name="theme-color" content="#ff4e00" />
+    <title>Come hungry · HornPub</title>
     <link rel="stylesheet" href="/gate.css" />
     <script
       defer
@@ -17,72 +17,65 @@
     <header class="gate-header">
       <a class="brand" href="/"
         >Horn<span>Pub</span><small>GRILL · BAR · GOOD TIMES</small></a
-      ><span class="eyebrow">YOUR NEW OLD FAVORITE.</span>
+      >
+      <a class="header-pill" href="#entry"
+        >Come on in <span aria-hidden="true">→</span></a
+      >
     </header>
     <main class="gate-layout">
       <section class="gate-scene" aria-label="Welcome to HornPub">
         <img
           src="/brand/pub-spread.webp"
-          alt="Burgers, barbecue ribs, wings and a cold beer in a cozy HornPub booth"
+          alt="Burgers, barbecue ribs, buffalo wings and a cold beer at HornPub"
+          fetchpriority="high"
         />
         <div class="scene-shade"></div>
         <div class="scene-copy">
-          <p class="eyebrow">GOOD TIMES ARE ON THE MENU</p>
-          <h2>A little louder.<br />A little saucier.</h2>
-          <p>Comfort food. Cold pours. Great company.</p>
+          <p class="eyebrow">BIG FLAVOR. GOOD TIMES.</p>
+          <h1>Come hungry.<br /><em>Leave happy.</em></h1>
+          <p>Stacked burgers. Saucy wings. Your kind of place.</p>
         </div>
-        <div class="scene-seal">HORN<span>✦</span>PUB</div>
+        <div class="scene-tag">GOOD TIMES<br /><strong>ON TAP.</strong></div>
       </section>
-      <section class="gate-welcome">
-        <div class="welcome-top">
-          <span class="entry-mark" aria-hidden="true">H</span>
-          <p class="eyebrow">THERE’S A SEAT FOR YOU</p>
+      <section class="gate-welcome" aria-labelledby="welcome-heading">
+        <div class="welcome-copy">
+          <h2 id="welcome-heading">Your table’s waiting.</h2>
+          <p>One quick human check, then dig into the good stuff.</p>
         </div>
-        <h1>
-          Pull up<br />
-          <em>a chair.</em>
-        </h1>
-        <p class="welcome-description">
-          The burgers are stacked. The drinks are cold.<br
-            class="desktop-break"
-          />
-          One quick human check, and you’re in.
-        </p>
-        <form id="entry">
-          <button class="button" type="submit">
-            Verify & come on in <span aria-hidden="true">↗</span>
-          </button>
-        </form>
-        <p id="status" role="status" aria-live="polite"></p>
-        <div class="fortress-note">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path
-              d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Z"
-              stroke="currentColor"
-              stroke-width="1.5"
-            />
-            <path
-              d="m8 12 3 3 5-6"
-              stroke="currentColor"
-              stroke-width="1.5"
-            /></svg
-          ><span
+        <div class="welcome-action">
+          <form id="entry">
+            <button class="button" type="submit">
+              Verify & come on in <span aria-hidden="true">→</span>
+            </button>
+          </form>
+          <p id="status" role="status" aria-live="polite"></p>
+          <p class="fortress-note">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="m8 12 3 3 5-6"
+                stroke="currentColor"
+                stroke-width="1.5"
+              /></svg
             >Protected by Fortress
-            <small>A quick check. Then the good stuff.</small></span
+          </p>
+          <noscript
+            ><p>Please enable JavaScript to complete the check.</p></noscript
           >
         </div>
-        <noscript
-          ><p>Please enable JavaScript to complete the check.</p></noscript
-        >
-        <div class="welcome-bottom">
-          <span>BIG PLATES</span><b>✦</b><span>COLD POURS</span><b>✦</b
-          ><span>GOOD COMPANY</span>
-        </div>
       </section>
+      <div class="welcome-bottom" aria-hidden="true">
+        <span>STACKED BURGERS</span><b>✦</b><span>SAUCY WINGS</span><b>✦</b
+        ><span>COLD POURS</span><b>✦</b><span>LIVE MUSIC</span>
+      </div>
     </main>
     <footer>
       <span>HornPub · A Fortress demo</span
-      ><span>Good food. Zero pretense.</span>
+      ><span>Big plates. Bigger good times.</span>
     </footer>
   </body>
 </html>

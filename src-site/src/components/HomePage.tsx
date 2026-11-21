@@ -21,54 +21,89 @@ export default function HomePage() {
   const selected = data?.categories.find((x) => x.id === data.category);
   return (
     <main>
-      <section className="pub-hero page-width">
+      <section className="pub-hero page-width" aria-label="Welcome to HornPub">
+        <img
+          className="hero-photo"
+          src="/menu/pub-spread.webp"
+          alt="Burgers, saucy wings, barbecue ribs and cold beer at HornPub"
+          fetchPriority="high"
+        />
         <div className="hero-copy">
-          <p className="kicker">YOUR NEIGHBORHOOD GRILL & BAR</p>
+          <p className="kicker">BIG FLAVOR. GOOD TIMES.</p>
           <h1>
-            Good food.
+            Bring your
             <br />
-            <em>Great company.</em>
+            <em>appetite.</em>
           </h1>
-          <p>
-            Big plates. Cold pours. One more song.
-            <br />
-            Pull up a chair—we saved you a spot.
-          </p>
-          <a href="#menu" className="pub-button">
-            Find your favorite <span aria-hidden="true">↓</span>
+          <p>Wings worth sharing. Burgers worth bragging about.</p>
+          <a href="#menu" className="pub-button light">
+            Explore the menu <span aria-hidden="true">→</span>
           </a>
-          <div className="hero-footnote">
-            <span className="tiny-star">✦</span> COMFORT FOOD. ZERO PRETENSE.
-          </div>
-        </div>
-        <div className="hero-picture">
-          <img
-            src="/menu/pub-spread.webp"
-            alt="A cheeseburger, smoky ribs, buffalo wings and a cold beer at HornPub"
-            fetchPriority="high"
-          />
-          <div className="hero-stamp">
-            GOOD TIMES
-            <br />
-            <b>ON TAP</b>
-            <span>HORN • PUB</span>
-          </div>
-          <div className="photo-caption">
-            The usual? Make it something good.
-          </div>
         </div>
       </section>
-      <div className="pub-ribbon" aria-hidden="true">
-        <span>STACKED BURGERS</span>
-        <b>✦</b>
-        <span>SAUCY WINGS</span>
-        <b>✦</b>
-        <span>COLD BEER</span>
-        <b>✦</b>
-        <span>LIVE MUSIC</span>
-        <b>✦</b>
-        <span>GOOD COMPANY</span>
+      <div className="hero-bar page-width">
+        <p>
+          Your favorites. A few new obsessions. <strong>All right here.</strong>
+        </p>
+        <Link to="/menu?category=wings">
+          Let’s talk wings <span aria-hidden="true">→</span>
+        </Link>
       </div>
+      {window.location.pathname === "/" && (
+        <section
+          className="featured page-width"
+          aria-labelledby="featured-heading"
+        >
+          <h2 id="featured-heading">Big on flavor.</h2>
+          <div className="feature-grid">
+            {[
+              {
+                category: "wings",
+                image: "buffalo-wings",
+                label: "Sauce it up",
+                sub: "Wings & tenders",
+              },
+              {
+                category: "burgers",
+                image: "pub-burger",
+                label: "Stacked with the good stuff",
+                sub: "Burgers & sliders",
+              },
+              {
+                category: "starters",
+                image: "loaded-fries",
+                label: "Start something good",
+                sub: "Shareable starters",
+              },
+              {
+                category: "desserts",
+                image: "cookie-skillet",
+                label: "Save a little room",
+                sub: "Desserts & sweet treats",
+              },
+            ].map((x) => (
+              <Link
+                key={x.category}
+                to={"/menu?category=" + x.category}
+                className="feature-card"
+              >
+                <div className="feature-photo">
+                  <img
+                    src={"/menu/" + x.image + ".webp"}
+                    alt={x.sub}
+                    loading="lazy"
+                  />
+                  <span>{x.label}</span>
+                </div>
+                <div className="feature-caption">
+                  {x.sub}
+                  <span aria-hidden="true">→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
       <section
         id="menu"
         className="catalog page-width"
@@ -77,7 +112,9 @@ export default function HomePage() {
         <div className="catalog-heading">
           <div>
             <p className="kicker">COME HUNGRY. STAY AWHILE.</p>
-            <h2 id="menu-heading">{selected?.name || "The good stuff."}</h2>
+            <h2 id="menu-heading">
+              {selected?.name || "Find your next favorite."}
+            </h2>
             <p>
               {selected?.intro ||
                 "All your pub favorites, and a few new reasons to come back."}

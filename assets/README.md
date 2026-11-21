@@ -7,3 +7,7 @@ Public welcome-page hero: `../gate/brand/pub-spread.webp`.
 Exact final prompts and generation sources: [image-prompts.json](image-prompts.json).
 
 Style: original American neighborhood bar-and-grill food photography, dark walnut, cream plates, green booths and warm brass lighting. No copied restaurant photos or logos. WebP conversion preserves the generated composition. Related menu variants share illustrative photography, disclosed in the site footer and product pages.
+
+## Typography
+
+Poppins (400, 600, 700, 800, 900) is self-hosted in `gate/brand/` and shared by the entry page and authenticated site. Downloaded from Google Fonts and converted to WOFF2; licensed under the SIL Open Font License in `Poppins-OFL.txt`. No runtime font requests go to third parties.
