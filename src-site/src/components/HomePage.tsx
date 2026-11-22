@@ -19,90 +19,104 @@ export default function HomePage() {
     return "/menu" + (p.size ? "?" + p.toString() : "");
   }
   const selected = data?.categories.find((x) => x.id === data.category);
+  const isHome = window.location.pathname === "/";
+  const MenuHeading = isHome ? "h2" : "h1";
   return (
     <main>
-      <section className="pub-hero page-width" aria-label="Welcome to HornPub">
-        <img
-          className="hero-photo"
-          src="/menu/pub-spread.webp"
-          alt="Burgers, saucy wings, barbecue ribs and cold beer at HornPub"
-          fetchPriority="high"
-        />
-        <div className="hero-copy">
-          <p className="kicker">BIG FLAVOR. GOOD TIMES.</p>
-          <h1>
-            Bring your
-            <br />
-            <em>appetite.</em>
-          </h1>
-          <p>Wings worth sharing. Burgers worth bragging about.</p>
-          <a href="#menu" className="pub-button light">
-            Explore the menu <span aria-hidden="true">→</span>
-          </a>
-        </div>
-      </section>
-      <div className="hero-bar page-width">
-        <p>
-          Your favorites. A few new obsessions. <strong>All right here.</strong>
-        </p>
-        <Link to="/menu?category=wings">
-          Let’s talk wings <span aria-hidden="true">→</span>
-        </Link>
-      </div>
-      {window.location.pathname === "/" && (
-        <section
-          className="featured page-width"
-          aria-labelledby="featured-heading"
-        >
-          <h2 id="featured-heading">Big on flavor.</h2>
-          <div className="feature-grid">
-            {[
-              {
-                category: "wings",
-                image: "buffalo-wings",
-                label: "Sauce it up",
-                sub: "Wings & tenders",
-              },
-              {
-                category: "burgers",
-                image: "pub-burger",
-                label: "Stacked with the good stuff",
-                sub: "Burgers & sliders",
-              },
-              {
-                category: "starters",
-                image: "loaded-fries",
-                label: "Start something good",
-                sub: "Shareable starters",
-              },
-              {
-                category: "desserts",
-                image: "cookie-skillet",
-                label: "Save a little room",
-                sub: "Desserts & sweet treats",
-              },
-            ].map((x) => (
-              <Link
-                key={x.category}
-                to={"/menu?category=" + x.category}
-                className="feature-card"
-              >
-                <div className="feature-photo">
-                  <img
-                    src={"/menu/" + x.image + ".webp"}
-                    alt={x.sub}
-                    loading="lazy"
-                  />
-                  <span>{x.label}</span>
-                </div>
-                <div className="feature-caption">
-                  {x.sub}
-                  <span aria-hidden="true">→</span>
-                </div>
-              </Link>
-            ))}
+      {isHome && (
+        <>
+          <section
+            className="pub-hero page-width"
+            aria-label="Welcome to HornPub"
+          >
+            <picture>
+              <source
+                media="(max-width: 700px)"
+                srcSet="/brand/pub-spread-768.webp"
+              />
+              <img
+                className="hero-photo"
+                src="/menu/pub-spread.webp"
+                alt="Burgers, saucy wings, barbecue ribs and cold beer at HornPub"
+                fetchPriority="high"
+              />
+            </picture>
+            <div className="hero-copy">
+              <p className="kicker">BIG FLAVOR. GOOD TIMES.</p>
+              <h1>
+                Bring your
+                <br />
+                <em>appetite.</em>
+              </h1>
+              <p>Wings worth sharing. Burgers worth bragging about.</p>
+              <a href="#menu" className="pub-button light">
+                Explore the menu <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </section>
+          <div className="hero-bar page-width">
+            <p>
+              Your favorites. A few new obsessions.{" "}
+              <strong>All right here.</strong>
+            </p>
+            <Link to="/menu?category=wings">
+              Let’s talk wings <span aria-hidden="true">→</span>
+            </Link>
           </div>
-        </section>
+          <section
+            className="featured page-width"
+            aria-labelledby="featured-heading"
+          >
+            <h2 id="featured-heading">Big on flavor.</h2>
+            <div className="feature-grid">
+              {[
+                {
+                  category: "wings",
+                  image: "buffalo-wings",
+                  label: "Sauce it up",
+                  sub: "Wings & tenders",
+                },
+                {
+                  category: "burgers",
+                  image: "pub-burger",
+                  label: "Stacked with the good stuff",
+                  sub: "Burgers & sliders",
+                },
+                {
+                  category: "starters",
+                  image: "loaded-fries",
+                  label: "Start something good",
+                  sub: "Shareable starters",
+                },
+                {
+                  category: "desserts",
+                  image: "cookie-skillet",
+                  label: "Save a little room",
+                  sub: "Desserts & sweet treats",
+                },
+              ].map((x) => (
+                <Link
+                  key={x.category}
+                  to={"/menu?category=" + x.category}
+                  className="feature-card"
+                >
+                  <div className="feature-photo">
+                    <img
+                      src={"/menu/" + x.image + ".webp"}
+                      alt=""
+                      loading="lazy"
+                    />
+                    <span>{x.label}</span>
+                  </div>
+                  <div className="feature-caption">
+                    {x.sub}
+                    <span aria-hidden="true">→</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </>
       )}
       <section
         id="menu"
@@ -112,9 +126,10 @@ export default function HomePage() {
         <div className="catalog-heading">
           <div>
             <p className="kicker">COME HUNGRY. STAY AWHILE.</p>
-            <h2 id="menu-heading">
-              {selected?.name || "Find your next favorite."}
-            </h2>
+            <MenuHeading id="menu-heading">
+              {selected?.name ||
+                (isHome ? "Find your next favorite." : "The menu.")}
+            </MenuHeading>
             <p>
               {selected?.intro ||
                 "All your pub favorites, and a few new reasons to come back."}
@@ -158,12 +173,30 @@ export default function HomePage() {
             </label>
             <input
               id="menu-search"
+              type="search"
+              enterKeyHint="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="What sounds good?"
+              placeholder="Search dishes"
             />
             <button type="submit">Search</button>
           </form>
+          <label className="category-picker">
+            Category
+            <select
+              value={params.get("category") || "all"}
+              onChange={(event) =>
+                navigate(filter("category", event.target.value))
+              }
+            >
+              <option value="all">All categories</option>
+              {data?.categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </label>
           <label className="menu-sort">
             Sort by{" "}
             <select
@@ -213,7 +246,11 @@ export default function HomePage() {
         ) : (
           <div className="food-grid">
             {data?.items.map((item) => (
-              <MenuCard key={item.id} item={item} />
+              <MenuCard
+                key={item.id}
+                item={item}
+                heading={isHome ? "h3" : "h2"}
+              />
             ))}
           </div>
         )}

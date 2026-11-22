@@ -30,7 +30,7 @@ function ReservationsPage(): JSX.Element {
   };
 
   return (
-    <div className="warm-gradient min-h-screen">
+    <main className="warm-gradient min-h-screen reservations">
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
@@ -68,6 +68,7 @@ function ReservationsPage(): JSX.Element {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <label
+                      htmlFor="reservation-name"
                       className="block mb-3 font-medium text-base sm:text-lg"
                       style={{ color: "var(--text-secondary)" }}
                     >
@@ -75,11 +76,13 @@ function ReservationsPage(): JSX.Element {
                     </label>
                     <input
                       type="text"
+                      id="reservation-name"
                       name="name"
+                      autoComplete="name"
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 focus:outline-none transition-colors"
+                      className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 transition-colors"
                       style={{
                         backgroundColor: "var(--warm-white)",
                         color: "var(--text-primary)",
@@ -97,6 +100,7 @@ function ReservationsPage(): JSX.Element {
 
                   <div>
                     <label
+                      htmlFor="reservation-email"
                       className="block mb-3 font-medium text-base sm:text-lg"
                       style={{ color: "var(--text-secondary)" }}
                     >
@@ -104,11 +108,13 @@ function ReservationsPage(): JSX.Element {
                     </label>
                     <input
                       type="email"
+                      id="reservation-email"
                       name="email"
+                      autoComplete="email"
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 focus:outline-none transition-colors"
+                      className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 transition-colors"
                       style={{
                         backgroundColor: "var(--warm-white)",
                         color: "var(--text-primary)",
@@ -127,6 +133,7 @@ function ReservationsPage(): JSX.Element {
 
                 <div>
                   <label
+                    htmlFor="reservation-phone"
                     className="block mb-3 font-medium text-base sm:text-lg"
                     style={{ color: "var(--text-secondary)" }}
                   >
@@ -134,11 +141,13 @@ function ReservationsPage(): JSX.Element {
                   </label>
                   <input
                     type="tel"
+                    id="reservation-phone"
                     name="phone"
+                    autoComplete="tel"
                     value={formData.phone}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 focus:outline-none transition-colors"
+                    className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 transition-colors"
                     style={{
                       backgroundColor: "var(--warm-white)",
                       color: "var(--text-primary)",
@@ -160,6 +169,7 @@ function ReservationsPage(): JSX.Element {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                   <div>
                     <label
+                      htmlFor="reservation-date"
                       className="block mb-3 font-medium text-base sm:text-lg"
                       style={{ color: "var(--text-secondary)" }}
                     >
@@ -167,11 +177,12 @@ function ReservationsPage(): JSX.Element {
                     </label>
                     <input
                       type="date"
+                      id="reservation-date"
                       name="date"
                       value={formData.date}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 focus:outline-none transition-colors"
+                      className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 transition-colors"
                       style={{
                         backgroundColor: "var(--warm-white)",
                         color: "var(--text-primary)",
@@ -188,17 +199,19 @@ function ReservationsPage(): JSX.Element {
 
                   <div>
                     <label
+                      htmlFor="reservation-time"
                       className="block mb-3 font-medium text-base sm:text-lg"
                       style={{ color: "var(--text-secondary)" }}
                     >
                       Time *
                     </label>
                     <select
+                      id="reservation-time"
                       name="time"
                       value={formData.time}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 focus:outline-none transition-colors"
+                      className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 transition-colors"
                       style={{
                         backgroundColor: "var(--warm-white)",
                         color: "var(--text-primary)",
@@ -226,17 +239,19 @@ function ReservationsPage(): JSX.Element {
 
                   <div>
                     <label
+                      htmlFor="reservation-guests"
                       className="block mb-3 font-medium text-base sm:text-lg"
                       style={{ color: "var(--text-secondary)" }}
                     >
                       Party Size *
                     </label>
                     <select
+                      id="reservation-guests"
                       name="guests"
                       value={formData.guests}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 focus:outline-none transition-colors"
+                      className="w-full px-4 py-4 sm:py-3 lg:py-4 rounded-lg text-base sm:text-lg border-2 transition-colors"
                       style={{
                         backgroundColor: "var(--warm-white)",
                         color: "var(--text-primary)",
@@ -262,17 +277,19 @@ function ReservationsPage(): JSX.Element {
               {/* Special Requests */}
               <div>
                 <label
+                  htmlFor="reservation-specialRequests"
                   className="block mb-3 font-medium text-base sm:text-lg"
                   style={{ color: "var(--text-secondary)" }}
                 >
                   Special Requests
                 </label>
                 <textarea
+                  id="reservation-specialRequests"
                   name="specialRequests"
                   value={formData.specialRequests}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-4 py-4 rounded-lg text-base sm:text-lg border-2 focus:outline-none transition-colors resize-vertical"
+                  className="w-full px-4 py-4 rounded-lg text-base sm:text-lg border-2 transition-colors resize-y"
                   style={{
                     backgroundColor: "var(--warm-white)",
                     color: "var(--text-primary)",
@@ -433,7 +450,7 @@ function ReservationsPage(): JSX.Element {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

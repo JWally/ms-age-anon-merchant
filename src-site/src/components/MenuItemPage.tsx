@@ -14,8 +14,8 @@ export default function MenuItemPage({ menuItemId }: { menuItemId: number }) {
   const [added, setAdded] = useState("");
   if (loading)
     return (
-      <main className="page-width detail-loading" role="status">
-        Getting something good ready…
+      <main className="page-width detail-loading">
+        <p role="status">Getting something good ready…</p>
       </main>
     );
   if (error || !item)

@@ -77,12 +77,6 @@ const App: React.FC = () => {
     const handlePopState = () => {
       setPath(window.location.pathname + window.location.search);
       window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-      if (window.location.pathname === "/menu")
-        requestAnimationFrame(() =>
-          document
-            .querySelector("#menu")
-            ?.scrollIntoView({ behavior: "instant" as ScrollBehavior }),
-        );
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -93,13 +87,13 @@ const App: React.FC = () => {
 
   return (
     <CartProvider>
-      <div className="demo-notice">
-        Fortress demo · No real orders or reservations.{" "}
-        <a href="/verification">Your verification</a> ·{" "}
-        <button onClick={() => window.location.assign("/verify")}>
-          Verify again
-        </button>
-      </div>
+      <aside className="demo-notice" aria-label="About this demo">
+        <span>Fortress demo · No real orders or reservations.</span>
+        <span className="notice-actions">
+          <a href="/verification">Your verification</a>
+          <a href="/verify">Verify again</a>
+        </span>
+      </aside>
       <Navbar />
       <CurrentPage />
       <Footer />
