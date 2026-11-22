@@ -6,7 +6,9 @@
 }
 .pub-logo {
   display: inline-flex;
-  flex: none;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
   align-items: center;
   gap: 0.23em;
   color: #482111;
@@ -21,9 +23,13 @@
   height: 1.4em;
   object-fit: contain;
 }
+.pub-logo > span {
+  min-width: 0;
+}
 .pub-logo small {
   display: block;
   margin: 0.48em 0 0 0.15em;
-  font: 700 max(8px, 0.21em) / 1.1 Poppins, Arial, sans-serif;
-  letter-spacing: 0.19em;
+  font: 700 .75rem/1.2 system-ui, sans-serif;
+  letter-spacing: 0.075em;
+  white-space: normal;
 }

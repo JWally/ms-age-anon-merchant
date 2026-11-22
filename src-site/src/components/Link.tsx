@@ -42,11 +42,10 @@ const Link = ({ to, children, onClick, ...props }: LinkProps) => {
 
   return (
     <a
-      {...props} // This spreads all the other props including style, onMouseEnter, onMouseLeave, etc.
       href={to}
       onClick={handleClick}
-      role="link"
       aria-current={isActive ? "page" : undefined}
+      {...props}
     >
       {children}
     </a>

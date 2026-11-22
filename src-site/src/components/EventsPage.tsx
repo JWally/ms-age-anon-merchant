@@ -73,7 +73,7 @@ const upcomingEvents: Event[] = [
 
 function EventsPage(): JSX.Element {
   return (
-    <div className="warm-gradient min-h-screen">
+    <main className="warm-gradient min-h-screen events">
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
@@ -114,7 +114,7 @@ function EventsPage(): JSX.Element {
                 >
                   <div className="space-y-4">
                     {/* Event title and pricing */}
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-wrap gap-y-2 justify-between items-start">
                       <h3
                         className="text-xl sm:text-2xl font-bold flex-1 pr-4"
                         style={{ color: "var(--warm-brown)" }}
@@ -414,7 +414,7 @@ function EventsPage(): JSX.Element {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

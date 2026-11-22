@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import Link from "./Link";
-import { money, navigate } from "../utils/catalog";
+import { menuThumbnail, money, navigate } from "../utils/catalog";
 export default function OrderPage() {
   const { cart, removeFromCart, updateQuantity, getCartTotal, emptyCart } =
     useContext(CartContext)!;
+  const itemCount = cart.reduce((n, x) => n + x.quantity, 0);
   if (!cart.length)
     return (
       <main className="page-width empty-tab">
@@ -36,7 +37,12 @@ export default function OrderPage() {
             <article className="cart-line" key={item.id}>
               {item.image && (
                 <Link to={`/menu/${item.id}`}>
-                  <img src={item.image} alt={item.name} />
+                  <img
+                    src={menuThumbnail(item.image)}
+                    alt={item.name}
+                    width="88"
+                    height="88"
+                  />
                 </Link>
               )}
               <div className="cart-line-copy">
@@ -77,7 +83,9 @@ export default function OrderPage() {
           <p className="kicker">THE GOOD STUFF, ADDED UP</p>
           <h2>On your tab</h2>
           <div>
-            <span>{cart.reduce((n, x) => n + x.quantity, 0)} items</span>
+            <span>
+              {itemCount} {itemCount === 1 ? "item" : "items"}
+            </span>
             <strong>{money(getCartTotal())}</strong>
           </div>
           <p>

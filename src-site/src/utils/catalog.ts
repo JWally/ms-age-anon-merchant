@@ -77,6 +77,9 @@ export function navigate(url: string) {
   window.history.pushState({}, "", url);
   window.dispatchEvent(new PopStateEvent("popstate"));
 }
+export function menuThumbnail(image: string) {
+  return image.replace(/^\/menu\/([a-z0-9-]+\.webp)$/u, "/menu/thumbs/$1");
+}
 export const money = (value: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
     value,

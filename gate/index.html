@@ -10,6 +10,7 @@
       content="Come hungry. Leave happy. Explore HornPub’s 120-item grill menu and live brass lineup. A Fortress demo for humans and phone-approved agents."
     />
     <link rel="canonical" href="https://hornpub.click/" />
+    <link rel="preload" as="font" type="font/woff2" href="/brand/poppins-800.woff2" crossorigin />
     <link rel="stylesheet" href="/brand/wordmark.css" />
     <link rel="icon" type="image/png" href="/brand/hornpub-trumpet.png?v=brass" />
     <meta property="og:type" content="website" />
@@ -44,7 +45,7 @@
   </head>
   <body>
     <header class="gate-header">
-      <a class="pub-logo" href="/" aria-label="HornPub home"
+      <a class="pub-logo" href="/"
         ><img
           class="trumpet"
           src="/brand/hornpub-trumpet.png"
@@ -56,11 +57,16 @@
     </header>
     <main class="gate-layout">
       <section class="gate-scene" aria-label="Welcome to HornPub">
-        <img
-          src="/brand/pub-spread.webp"
-          alt="Burgers, barbecue ribs, buffalo wings and a cold beer at HornPub"
-          fetchpriority="high"
-        />
+        <picture>
+          <source media="(max-width: 700px)" srcset="/brand/pub-spread-768.webp" />
+          <img
+            src="/brand/pub-spread.webp"
+            width="1536"
+            height="1024"
+            alt="Burgers, barbecue ribs, buffalo wings and a cold beer at HornPub"
+            fetchpriority="high"
+          />
+        </picture>
         <div class="scene-shade"></div>
         <div class="scene-copy">
           <p class="eyebrow">BIG FLAVOR. GOOD TIMES.</p>
@@ -77,12 +83,12 @@
         <div class="entry-choices">
           <form id="entry">
             <button class="button" type="submit">
-              Click here if you’re a HUMAN <span aria-hidden="true">→</span>
+              Click here if you’re a HUMAN
             </button>
           </form>
           <details class="agent-entry">
             <summary class="button">
-              Click here if you’re an AGENT <span aria-hidden="true">⌄</span>
+              Click here if you’re an AGENT
             </summary>
             <div class="agent-steps">
               <h3>Enter with a Fortress passport</h3>
@@ -104,7 +110,7 @@
                 </li>
               </ol>
               <button type="submit" form="entry" class="button">
-                Open the passport check <span aria-hidden="true">→</span>
+                Open the passport check
               </button>
             </div>
           </details>

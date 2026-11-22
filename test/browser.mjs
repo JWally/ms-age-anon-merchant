@@ -34,6 +34,102 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const origin = "http://localhost:" + server.address().port;
 const browser = await chromium.launch({ headless: true });
 await mkdir("artifacts/catalog", { recursive: true });
+
+async function assertTouchTarget(control, minimumSize) {
+  const box = await control.boundingBox();
+  assert.ok(
+    box && box.width >= minimumSize && box.height >= minimumSize,
+    `${control} needs a ${minimumSize}px touch target, got ${JSON.stringify(box)}`,
+  );
+}
+
+async function assertFontSize(control, minimumSize) {
+  const size = await control.evaluate((el) =>
+    parseFloat(getComputedStyle(el).fontSize),
+  );
+  assert.ok(
+    size >= minimumSize,
+    `${control} needs ${minimumSize}px text, got ${size}px`,
+  );
+}
+
+async function assertSmallPhoneReflow(page) {
+  const previousSize = page.viewportSize();
+  await page.setViewportSize({ width: 320, height: 568 });
+  for (const fontSize of ["100%", "200%"]) {
+    const style = await page.addStyleTag({
+      content: `html { font-size: ${fontSize} !important; }`,
+    });
+    const width = await page.evaluate(
+      () => document.documentElement.scrollWidth,
+    );
+    assert.ok(
+      width <= 320,
+      `${new URL(page.url()).pathname} is ${width}px wide at ${fontSize} text`,
+    );
+    await style.evaluate((el) => el.remove());
+  }
+  await page.setViewportSize(previousSize);
+}
+
+async function assertSmallPhoneEntry(page) {
+  const firstChoice = page.locator("#entry button");
+  const agentChoice = page.locator(".agent-entry summary");
+  const passport = page.getByRole("button", {
+    name: /Open the passport check/,
+  });
+  const guide = page.getByRole("link", { name: /Fortress agent instructions/ });
+  const previousSize = page.viewportSize();
+  await page.setViewportSize({ width: 320, height: 568 });
+  await firstChoice.focus();
+  await page.keyboard.press("Tab");
+  assert.ok(await agentChoice.evaluate((el) => el === document.activeElement));
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Tab");
+  assert.ok(await guide.evaluate((el) => el === document.activeElement));
+  await page.keyboard.press("Tab");
+  assert.ok(await passport.evaluate((el) => el === document.activeElement));
+
+  for (const control of [firstChoice, agentChoice, passport]) {
+    await assertTouchTarget(control, 48);
+    await assertFontSize(control, 18);
+  }
+  const largeText = await page.addStyleTag({
+    content: "html { font-size: 200% !important; }",
+  });
+  for (const control of [firstChoice, agentChoice, passport]) {
+    await assertFontSize(control, 36);
+  }
+  const clipped = await page.locator(".gate-welcome").evaluate((panel) => {
+    const { left, right } = panel.getBoundingClientRect();
+    const nodes = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT);
+    const range = document.createRange();
+    for (let node = nodes.nextNode(); node; node = nodes.nextNode()) {
+      if (!node.textContent.trim()) continue;
+      range.selectNodeContents(node);
+      for (const rect of range.getClientRects()) {
+        if (rect.left < left - 1 || rect.right > right + 1)
+          return node.textContent.trim();
+      }
+    }
+    return null;
+  });
+  assert.equal(
+    clipped,
+    null,
+    `Entry text overflows the phone panel: ${clipped}`,
+  );
+  assert.ok(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  );
+  await largeText.evaluate((el) => el.remove());
+  await agentChoice.press("Space");
+  assert.equal(await passport.isVisible(), false);
+  await page.setViewportSize(previousSize);
+}
+
 try {
   for (const [name, width, height] of [
     ["desktop", 1440, 1000],
@@ -67,6 +163,7 @@ try {
       path: `artifacts/catalog/gate-${name}.png`,
       fullPage: true,
     });
+    if (name === "phone") await assertSmallPhoneEntry(page);
     await page
       .getByText("Click here if you’re an AGENT", { exact: false })
       .click();
@@ -124,13 +221,21 @@ try {
     );
     if (name === "phone") {
       await page.screenshot({ path: "artifacts/catalog/sticky-nav-phone.png" });
-      await header.getByRole("button", { name: "Toggle menu" }).click();
+      const menuToggle = header.getByRole("button", { name: "Toggle menu" });
+      await assertTouchTarget(menuToggle, 44);
+      await menuToggle.click();
       await page.keyboard.press("Tab");
       assert.ok(
         await header
           .getByRole("link", { name: "The menu", exact: true })
           .evaluate((link) => link === document.activeElement),
       );
+      await page.keyboard.press("Escape");
+      assert.equal(await menuToggle.getAttribute("aria-expanded"), "false");
+      assert.ok(
+        await menuToggle.evaluate((el) => el === document.activeElement),
+      );
+      await menuToggle.press("Enter");
       await tabLink.click();
       assert.equal(new URL(page.url()).pathname, "/cart");
       assert.equal(await tabLink.count(), 0);
@@ -163,7 +268,12 @@ try {
       .waitFor();
     await page.locator(".menu-card").first().waitFor();
     assert.equal(await page.locator(".menu-card").count(), 12);
-    await page.getByLabel("Search the menu").fill("no-such-food");
+    const search = page.getByLabel("Search the menu");
+    if (name === "phone") {
+      await assertSmallPhoneReflow(page);
+      await assertFontSize(search, 16);
+    }
+    await search.fill("no-such-food");
     await page.getByRole("button", { name: "Search", exact: true }).click();
     await page
       .getByRole("heading", { name: "No bites on that one." })
@@ -184,6 +294,15 @@ try {
       path: `artifacts/catalog/product-${name}.png`,
       fullPage: true,
     });
+    if (name === "phone") {
+      await assertSmallPhoneReflow(page);
+      for (const label of ["Decrease quantity", "Increase quantity"]) {
+        await assertTouchTarget(
+          page.getByRole("button", { name: label, exact: true }),
+          44,
+        );
+      }
+    }
     await page
       .getByRole("button", { name: "Increase quantity", exact: true })
       .click();
@@ -193,6 +312,7 @@ try {
       .getByRole("heading", { name: "Your tab.", exact: true })
       .waitFor();
     assert.match(await page.locator(".tab-summary").innerText(), /\$57\.90/);
+    if (name === "phone") await assertSmallPhoneReflow(page);
     await page.screenshot({
       path: `artifacts/catalog/cart-${name}.png`,
       fullPage: true,

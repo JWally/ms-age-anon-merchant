@@ -306,6 +306,7 @@ export function createHandler({
     if (
       [
         "/brand/pub-spread.webp",
+        "/brand/pub-spread-768.webp",
         "/brand/hornpub-trumpet.png",
         "/brand/wordmark.css",
         "/brand/hornpub-lettering.woff2",

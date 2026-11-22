@@ -59,6 +59,8 @@ test("every photo exists, fits a Lambda response, and full catalog is absent fro
   for (const item of menuItems) {
     const s = await stat("src-site/public" + item.image);
     assert.ok(s.size < 4000000, item.image);
+    const thumbnail = await stat("src-site/public" + item.image.replace("/menu/", "/menu/thumbs/"));
+    assert.ok(thumbnail.size < s.size, item.image);
     assert.ok(item.price > 0);
   }
   const files = await readdir("build/private/assets");
@@ -91,9 +93,13 @@ test("catalog endpoints and photography are authenticated; promotional hero and 
     body: JSON.stringify(data),
     cookies,
   });
-  for (const p of ["/api/menu", "/api/menu/1", "/menu/pub-burger.webp"])
+  for (const p of ["/api/menu", "/api/menu/1", "/menu/pub-burger.webp", "/menu/thumbs/pub-burger.webp"])
     assert.equal((await handler(req(p))).statusCode, 401);
-  assert.equal((await handler(req("/brand/pub-spread.webp"))).statusCode, 200);
+  for (const hero of ["/brand/pub-spread.webp", "/brand/pub-spread-768.webp"]) {
+    const image = await handler(req(hero));
+    assert.equal(image.statusCode, 200);
+    assert.equal(image.headers["content-type"], "image/webp");
+  }
   for (const weight of [400, 600, 700, 800, 900]) {
     const font = await handler(req(`/brand/poppins-${weight}.woff2`));
     assert.equal(font.statusCode, 200);
@@ -130,6 +136,9 @@ test("catalog endpoints and photography are authenticated; promotional hero and 
       .statusCode,
     200,
   );
+  const thumb = await handler(req("/menu/thumbs/pub-burger.webp", "GET", undefined, end.cookies));
+  assert.equal(thumb.statusCode, 200);
+  assert.equal(thumb.headers["content-type"], "image/webp");
   now += 900000;
   assert.equal(
     (await handler(req("/api/menu", "GET", undefined, end.cookies))).statusCode,
